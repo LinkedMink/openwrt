@@ -236,6 +236,55 @@ define U-Boot/mt7986_bananapi_bpi-r3-nor
   FIP_COMPRESS:=1
 endef
 
+define U-Boot/mt7986_bananapi_bpi-r3-emmc-custom
+  NAME:=BananaPi BPi-R3
+  BUILD_SUBTARGET:=filogic
+  BUILD_DEVICES:=bananapi_bpi-r3-custom
+  UBOOT_CONFIG:=mt7986a_bpi-r3-emmc
+  UBOOT_IMAGE:=u-boot.fip
+  BL2_BOOTDEV:=emmc
+  BL2_SOC:=mt7986
+  BL2_DDRTYPE:=ddr4
+  DEPENDS:=+trusted-firmware-a-mt7986-emmc-ddr4
+endef
+
+define U-Boot/mt7986_bananapi_bpi-r3-sdmmc-custom
+  NAME:=BananaPi BPi-R3
+  BUILD_SUBTARGET:=filogic
+  BUILD_DEVICES:=bananapi_bpi-r3-custom
+  UBOOT_CONFIG:=mt7986a_bpi-r3-sd
+  UBOOT_IMAGE:=u-boot.fip
+  BL2_BOOTDEV:=sdmmc
+  BL2_SOC:=mt7986
+  BL2_DDRTYPE:=ddr4
+  DEPENDS:=+trusted-firmware-a-mt7986-sdmmc-ddr4
+endef
+
+define U-Boot/mt7986_bananapi_bpi-r3-snand-custom
+  NAME:=BananaPi BPi-R3
+  BUILD_SUBTARGET:=filogic
+  BUILD_DEVICES:=bananapi_bpi-r3-custom
+  UBOOT_CONFIG:=mt7986a_bpi-r3-snand
+  UBOOT_IMAGE:=u-boot.fip
+  BL2_BOOTDEV:=spim-nand
+  BL2_SOC:=mt7986
+  BL2_DDRTYPE:=ddr4
+  DEPENDS:=+trusted-firmware-a-mt7986-spim-nand-ddr4
+endef
+
+define U-Boot/mt7986_bananapi_bpi-r3-nor-custom
+  NAME:=BananaPi BPi-R3
+  BUILD_SUBTARGET:=filogic
+  BUILD_DEVICES:=bananapi_bpi-r3-custom
+  UBOOT_CONFIG:=mt7986a_bpi-r3-nor
+  UBOOT_IMAGE:=u-boot.fip
+  BL2_BOOTDEV:=nor
+  BL2_SOC:=mt7986
+  BL2_DDRTYPE:=ddr4
+  DEPENDS:=+trusted-firmware-a-mt7986-nor-ddr4
+  FIP_COMPRESS:=1
+endef
+
 define U-Boot/mt7986_xiaomi_redmi-router-ax6000
   NAME:=Xiaomi Redmi AX6000
   BUILD_SUBTARGET:=filogic
