@@ -1,0 +1,98 @@
+/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
+/**
+ * @todo need to understand uboot better and patches to apply custom overlay at boot, build auto-gens config:
+		config-mt7986a-bananapi-bpi-r3-emmc-snand-custom {
+			description = "OpenWrt bananapi_bpi-r3-custom with mt7986a-bananapi-bpi-r3-emmc-snand-custom";
+			kernel = "kernel-1";
+			fdt = "fdt-1", "fdt-mt7986a-bananapi-bpi-r3-emmc-snand-custom";
+			loadables = "rootfs-1";
+			
+			
+		};
+ * @see 430-add-bpi-r3.patch
+ */
+
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "bananapi,bpi-r3", "mediatek,mt7986a";
+
+    fragment@0 {
+        target-path = "/soc/mmc@11230000";
+        __overlay__ {
+            pinctrl-names = "default", "state_uhs";
+            pinctrl-0 = <&mmc0_pins_default>;
+            pinctrl-1 = <&mmc0_pins_uhs>;
+            bus-width = <8>;
+            max-frequency = <200000000>;
+            /delete-property/ cap-sd-highspeed;
+            cap-mmc-highspeed;
+            mmc-hs200-1_8v;
+            mmc-hs400-1_8v;
+            hs400-ds-delay = <0x14014>;
+            vmmc-supply = <&reg_3p3v>;
+            vqmmc-supply = <&reg_1p8v>;
+            non-removable;
+            no-sd;
+            no-sdio;
+            status = "okay";
+        };
+    };
+
+    fragment@1 {
+        target-path = "/soc/spi@1100a000";
+        __overlay__ {
+            flash@0 {
+                compatible = "spi-nand";
+                reg = <0>;
+                spi-max-frequency = <10000000>;
+                spi-tx-buswidth = <4>;
+                spi-rx-buswidth = <4>;
+
+                partitions {
+                    compatible = "fixed-partitions";
+                    #address-cells = <1>;
+                    #size-cells = <1>;
+
+                    partition@0 {
+                        label = "bl2";
+                        reg = <0x0 0x80000>;
+                        read-only;
+                    };
+
+                    partition@80000 {
+                        label = "reserved";
+                        reg = <0x80000 0x300000>;
+                    };
+
+                    partition@380000 {
+                        label = "fip";
+                        reg = <0x380000 0x200000>;
+                        read-only;
+                    };
+
+                    partition@580000 {
+                        label = "ubi";
+                        reg = <0x580000 0x7a80000>;
+                    };
+                };
+            };
+        };
+    };
+
+    fragment@2 {
+        target = <&fan>;
+        /**
+        * Cell 0 corresponds to not tripped, 1 to active-low, etc.
+        * Value 0 = 100% duty cycle, so this is fan always on, not sure why this is inverted from `dtsi` file
+        * @see ../files-5.15/arch/arm64/boot/dts/mediatek/mt7986a.dtsi#L665
+        * @see ../files-5.15/arch/arm64/boot/dts/mediatek/mt7986a.dtsi#L701
+        */
+        __overlay__ {
+            pwms = <&pwm 0 10000 0>;
+            cooling-levels = <0 0 0 0>;
+            status = "okay";
+        };
+    };
+};

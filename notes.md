@@ -69,13 +69,8 @@ cd ~/bin/openwrt-imagebuilder-mediatek-filogic.Linux-x86_64
 
 ```sh
 make image \
-    PROFILE="bananapi_bpi-r3" \
-    PACKAGES="base-files busybox ca-bundle dnsmasq dropbear e2fsprogs f2fsck firewall4 fstools kmod-crypto-hw-safexcel kmod-gpio-button-hotplug kmod-hwmon-pwmfan kmod-i2c-gpio kmod-leds-gpio kmod-mt7915e kmod-mt7986-firmware kmod-nft-offload kmod-sfp kmod-usb3 libc libgcc libustream-wolfssl logd mkf2fs mtd netifd nftables odhcp6c odhcpd-ipv6only opkg ppp ppp-mod-pppoe procd procd-seccomp procd-ujail uboot-envtools uci uclient-fetch urandom-seed urngd wpad-basic-wolfssl kmod-mt7921e mt7921bt-firmware kmod-bluetooth luci-ssl luci-app-samba4 parted luci-app-statistics collectd-mod-wireless collectd-mod-sensors kmod-crypto-ecb kmod-crypto-xts kmod-crypto-misc kmod-crypto-user cryptsetup f2fs-tools f2fsck kmod-fs-f2fs mkf2fs block-mount kmod-usb-storage kmod-sfp ethtool-full kmod-nvme keepalived luci-app-keepalived conntrackd collectd-mod-thermal wireguard-tools kmod-wireguard luci-proto-wireguard dnscrypt-proxy2 luci-app-uhttpd node node-npm curl"
-
-# Missing luci-app-keepalived
-make image \
-    PROFILE="bananapi_bpi-r3" \
-    PACKAGES="base-files busybox ca-bundle dnsmasq dropbear e2fsprogs f2fsck firewall4 fstools kmod-crypto-hw-safexcel kmod-gpio-button-hotplug kmod-hwmon-pwmfan kmod-i2c-gpio kmod-leds-gpio kmod-mt7915e kmod-mt7986-firmware kmod-nft-offload kmod-sfp kmod-usb3 libc libgcc libustream-wolfssl logd mkf2fs mtd netifd nftables odhcp6c odhcpd-ipv6only opkg ppp ppp-mod-pppoe procd procd-seccomp procd-ujail uboot-envtools uci uclient-fetch urandom-seed urngd wpad-basic-wolfssl kmod-mt7921e mt7921bt-firmware kmod-bluetooth luci-ssl luci-app-samba4 parted luci-app-statistics collectd-mod-wireless collectd-mod-sensors kmod-crypto-ecb kmod-crypto-xts kmod-crypto-misc kmod-crypto-user cryptsetup f2fs-tools f2fsck kmod-fs-f2fs mkf2fs block-mount kmod-usb-storage kmod-sfp ethtool-full kmod-nvme keepalived conntrackd collectd-mod-thermal wireguard-tools kmod-wireguard luci-proto-wireguard dnscrypt-proxy2 luci-app-uhttpd node node-npm curl"
+    PROFILE="bananapi_bpi-r3-custom" \
+    PACKAGES="base-files busybox ca-bundle dnsmasq dropbear e2fsprogs f2fsck firewall4 fstools kmod-crypto-hw-safexcel kmod-gpio-button-hotplug kmod-hwmon-pwmfan kmod-i2c-gpio kmod-leds-gpio kmod-mt7915e kmod-mt7986-firmware kmod-nft-offload kmod-sfp kmod-usb3 libc libgcc libustream-wolfssl logd mkf2fs mtd netifd nftables odhcp6c odhcpd-ipv6only opkg ppp ppp-mod-pppoe procd procd-seccomp procd-ujail uboot-envtools uci uclient-fetch urandom-seed urngd wpad-basic-wolfssl kmod-mt7921e mt7921bt-firmware kmod-bluetooth luci-ssl luci-app-samba4 parted luci-app-statistics collectd-mod-wireless collectd-mod-sensors kmod-crypto-ecb kmod-crypto-xts kmod-crypto-misc kmod-crypto-user cryptsetup f2fs-tools f2fsck kmod-fs-f2fs mkf2fs block-mount kmod-usb-storage kmod-sfp ethtool-full kmod-nvme keepalived luci-app-keepalived conntrackd collectd-mod-thermal wireguard-tools kmod-wireguard luci-proto-wireguard dnscrypt-proxy2 luci-app-uhttpd node node-npm curl prometheus-node-exporter-lua"
 ```
 
 ## Clean
