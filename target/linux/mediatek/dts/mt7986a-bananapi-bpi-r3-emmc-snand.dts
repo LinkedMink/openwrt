@@ -68,19 +68,4 @@
 			};
 		};
 	};
-
-    fragment@2 {
-        target = <&fan>;
-        /**
-        * Cell 0 corresponds to not tripped, 1 to active-low, etc.
-        * Value 0 = 100% duty cycle, so this is fan always on, not sure why this is inverted from `dtsi` file
-        * @see ../files-5.15/arch/arm64/boot/dts/mediatek/mt7986a.dtsi#L665
-        * @see ../files-5.15/arch/arm64/boot/dts/mediatek/mt7986a.dtsi#L701
-        */
-        __overlay__ {
-            pwms = <&pwm 0 10000 0>;
-            cooling-levels = <0 0 0 0>;
-            status = "okay";
-        };
-    };
 };

@@ -100,6 +100,7 @@ define Device/bananapi_bpi-r3
   DEVICE_PACKAGES += keepalived conntrackd dnscrypt-proxy2 
   DEVICE_PACKAGES += wireguard-tools kmod-wireguard luci-proto-wireguard
   DEVICE_PACKAGES += curl ethtool-full node node-npm
+  DEVICE_PACKAGES += kmod-usb-net-rndis kmod-usb-acm usb-modeswitch
   IMAGES := sysupgrade.itb
   KERNEL_INITRAMFS_SUFFIX := -recovery.itb
   ARTIFACTS := \

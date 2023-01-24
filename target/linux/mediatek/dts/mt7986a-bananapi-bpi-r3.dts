@@ -268,7 +268,6 @@
 	pinctrl-names = "default", "dbdc";
 	/**
 	 * @todo WiFi LEDs not working
-	 * Also don't see LTE and SSD LED definitions, so those probably don't work either
 	 */
 	pinctrl-0 = <&wf_2g_5g_pins>, <&wf_led_pins>;
 	pinctrl-1 = <&wf_dbdc_pins>, <&wf_led_pins>;
@@ -452,7 +451,7 @@
 
 &fan {
 	pwms = <&pwm 0 10000 0>;
-	cooling-levels = <255 96 52 0>;
+	cooling-levels = <0 0 0 0>;
 	status = "okay";
 };
 
