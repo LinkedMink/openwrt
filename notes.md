@@ -36,6 +36,9 @@ make menuconfig
 
 https://openwrt.org/docs/guide-developer/toolchain/use-buildsystem#building_images
 
+Test Optimizations:
+https://forum.archive.openwrt.org/viewtopic.php?id=30141#p136619
+
 ```sh
 # Backgroud Pre-Download
 make -j 4 download
@@ -59,19 +62,67 @@ tar -xvf bin/targets/mediatek/filogic/openwrt-imagebuilder-mediatek-filogic.Linu
     --directory ~/bin
 
 # Compiled all dependency
-cp repositories.local.conf \
+cp ../img-builder/repositories.local.conf \
     ~/bin/openwrt-imagebuilder-mediatek-filogic.Linux-x86_64/repositories.conf
 # Compiled kernel and core system
-cp repositories.official.conf \
+cp ../img-builder/repositories.official.conf \
     ~/bin/openwrt-imagebuilder-mediatek-filogic.Linux-x86_64/repositories.conf
-
-cd ~/bin/openwrt-imagebuilder-mediatek-filogic.Linux-x86_64
 ```
 
 ```sh
-make image \
-    PROFILE="bananapi_bpi-r3" \
-    PACKAGES="base-files busybox ca-bundle dnsmasq dropbear e2fsprogs f2fsck firewall4 fstools kmod-crypto-hw-safexcel kmod-gpio-button-hotplug kmod-hwmon-pwmfan kmod-i2c-gpio kmod-leds-gpio kmod-mt7915e kmod-mt7986-firmware kmod-nft-offload kmod-sfp kmod-usb3 libc libgcc libustream-wolfssl logd mkf2fs mtd netifd nftables odhcp6c odhcpd-ipv6only opkg ppp ppp-mod-pppoe procd procd-seccomp procd-ujail uboot-envtools uci uclient-fetch urandom-seed urngd wpad-basic-wolfssl kmod-mt7921e mt7921bt-firmware kmod-bluetooth luci-ssl luci-app-samba4 parted luci-app-statistics collectd-mod-wireless collectd-mod-sensors kmod-crypto-ecb kmod-crypto-xts kmod-crypto-misc kmod-crypto-user cryptsetup f2fs-tools f2fsck kmod-fs-f2fs mkf2fs block-mount kmod-usb-storage kmod-sfp ethtool-full kmod-nvme keepalived luci-app-keepalived conntrackd collectd-mod-thermal wireguard-tools kmod-wireguard luci-proto-wireguard dnscrypt-proxy2 luci-app-uhttpd node node-npm curl prometheus-node-exporter-lua kmod-usb-net-rndis kmod-usb-acm usb-modeswitch"
+# Defaults
+export PACKAGES="base-files busybox ca-bundle dnsmasq dropbear e2fsprogs f2fsck firewall4 fstools kmod-crypto-hw-safexcel kmod-gpio-button-hotplug kmod-hwmon-pwmfan kmod-i2c-gpio kmod-leds-gpio kmod-mt7915e kmod-mt7986-firmware kmod-nft-offload kmod-sfp kmod-usb3 libc libgcc libustream-wolfssl logd mkf2fs mtd netifd nftables odhcp6c odhcpd-ipv6only opkg ppp ppp-mod-pppoe procd procd-seccomp procd-ujail uboot-envtools uci uclient-fetch urandom-seed urngd wpad-basic-wolfssl"
+# Base Drivers
+export PACKAGES="${PACKAGES} kmod-mt7921e mt7921bt-firmware kmod-bluetooth kmod-nvme"
+# Filesystem
+export PACKAGES="${PACKAGES} f2fs-tools kmod-fs-f2fs kmod-fs-exfat libblkid1 ntfs-3g kmod-usb-storage block-mount parted"
+# Filesystem luks
+export PACKAGES="${PACKAGES} kmod-crypto-ecb kmod-crypto-xts kmod-crypto-misc kmod-crypto-user cryptsetup"
+# Admin and Security
+export PACKAGES="${PACKAGES} luci-ssl ethtool-full dnscrypt-proxy2"
+echo $PACKAGES
+
+# SNAND Min
+cp -r ~/src/img-builder/files ~/bin/openwrt-imagebuilder-mediatek-filogic.Linux-x86_64/
+make image PROFILE="bananapi_bpi-r3" FILES="files"
+# Modem R11e-LTE6
+export PACKAGES="${PACKAGES} kmod-usb-net-rndis kmod-usb-acm usb-modeswitch luci-proto-modemmanager"
+# VRRP Failover
+export PACKAGES="${PACKAGES} keepalived conntrackd"
+# WireGuard VPN
+export PACKAGES="${PACKAGES} wireguard-tools kmod-wireguard luci-proto-wireguard"
+# Samba
+export PACKAGES="${PACKAGES} luci-app-samba4"
+# Monitoring/Stats
+export PACKAGES="${PACKAGES} luci-app-statistics collectd-mod-wireless collectd-mod-sensors collectd-mod-thermal prometheus-node-exporter-lua"
+# Admin and Utils
+export PACKAGES="${PACKAGES} luci-app-uhttpd luci-app-acl luci-proto-bonding curl"
+# Modem/Radio Extensions
+export PACKAGES="${PACKAGES} rtl-sdr gpsd gpsd-clients ntpd ntp-utils"
+# NodeJS
+export PACKAGES="${PACKAGES} node node-npm"
+
+make image PROFILE="bananapi_bpi-r3" PACKAGES=${PACKAGES}
+
+base-files busybox ca-bundle dnsmasq dropbear e2fsprogs f2fsck firewall4 fstools kmod-crypto-hw-safexcel kmod-gpio-button-hotplug kmod-hwmon-pwmfan kmod-i2c-gpio kmod-leds-gpio kmod-mt7915e kmod-mt7986-firmware kmod-nft-offload kmod-sfp kmod-usb3 libc libgcc libustream-wolfssl logd mkf2fs mtd netifd nftables odhcp6c odhcpd-ipv6only opkg ppp ppp-mod-pppoe procd procd-seccomp procd-ujail uboot-envtools uci uclient-fetch urandom-seed urngd wpad-basic-wolfssl
+```
+
+ppp ppp-mod-pppoe
+luci-proto-bonding luci-app-wol luci-app-acl rtl-sdr
+gpsd gpsd-clients ntpd ntp-utils
+https://openwrt.org/docs/guide-user/luci/luci.essentials#luci_on_nginx
+https://openwrt.org/docs/guide-user/services/ntp/gps
+
+```sh
+# New Method
+cp ~/src/img-builder/.profiles.mk ~/bin/openwrt-imagebuilder-mediatek-filogic.Linux-x86_64/
+
+# SNAND Min
+cp -r ~/src/img-builder/files ~/bin/openwrt-imagebuilder-mediatek-filogic.Linux-x86_64/
+make image PROFILE="bananapi_bpi-r3-min" FILES="files"
+
+# Full
+make image PROFILE="bananapi_bpi-r3-custom" FILES="files"
 ```
 
 ## Clean

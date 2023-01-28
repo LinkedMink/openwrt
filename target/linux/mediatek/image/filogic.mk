@@ -84,6 +84,118 @@ endef
 # endef
 # TARGET_DEVICES += bananapi_bpi-r3
 
+# Minimal
+# define Device/bananapi_bpi-r3
+#   DEVICE_VENDOR := Bananapi
+#   DEVICE_MODEL := BPi-R3
+#   DEVICE_DTS := mt7986a-bananapi-bpi-r3
+#   DEVICE_DTS_CONFIG := config-mt7986a-bananapi-bpi-r3
+#   DEVICE_DTS_OVERLAY:= mt7986a-bananapi-bpi-r3-nor mt7986a-bananapi-bpi-r3-emmc-nor mt7986a-bananapi-bpi-r3-emmc-snand-custom mt7986a-bananapi-bpi-r3-snand
+#   DEVICE_DTS_DIR := ../dts
+#   DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-sfp kmod-usb3 f2fsck mkf2fs
+#   DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth kmod-nvme
+#   DEVICE_PACKAGES += f2fs-tools parted
+#   DEVICE_PACKAGES += kmod-crypto-xts kmod-crypto-user cryptsetup
+#   IMAGES := sysupgrade.itb
+#   KERNEL_INITRAMFS_SUFFIX := -recovery.itb
+#   ARTIFACTS := \
+# 	       emmc-preloader.bin emmc-bl31-uboot.fip \
+# 	       nor-preloader.bin nor-bl31-uboot.fip \
+# 	       sdcard.img.gz \
+# 	       snand-preloader.bin snand-bl31-uboot.fip
+#   ARTIFACT/emmc-preloader.bin	:= bl2 emmc-ddr4
+#   ARTIFACT/emmc-bl31-uboot.fip	:= bl31-uboot bananapi_bpi-r3-emmc
+#   ARTIFACT/nor-preloader.bin	:= bl2 nor-ddr4
+#   ARTIFACT/nor-bl31-uboot.fip	:= bl31-uboot bananapi_bpi-r3-nor
+#   ARTIFACT/snand-preloader.bin	:= bl2 spim-nand-ddr4
+#   ARTIFACT/snand-bl31-uboot.fip	:= bl31-uboot bananapi_bpi-r3-snand
+#   ARTIFACT/sdcard.img.gz	:= mt7986-gpt sdmmc |\
+# 				   pad-to 17k | bl2 sdmmc-ddr4 |\
+# 				   pad-to 6656k | bl31-uboot bananapi_bpi-r3-sdmmc |\
+# 				$(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),\
+# 				   pad-to 12M | append-image-stage initramfs-recovery.itb | check-size 44m |\
+# 				) \
+# 				   pad-to 44M | bl2 spim-nand-ddr4 |\
+# 				   pad-to 45M | bl31-uboot bananapi_bpi-r3-snand |\
+# 				   pad-to 49M | bl2 nor-ddr4 |\
+# 				   pad-to 50M | bl31-uboot bananapi_bpi-r3-nor |\
+# 				   pad-to 51M | bl2 emmc-ddr4 |\
+# 				   pad-to 52M | bl31-uboot bananapi_bpi-r3-emmc |\
+# 				   pad-to 56M | mt7986-gpt emmc |\
+# 				$(if $(CONFIG_TARGET_ROOTFS_SQUASHFS),\
+# 				   pad-to 64M | append-image squashfs-sysupgrade.itb | check-size | gzip \
+# 				)
+#   IMAGE_SIZE := $$(shell expr 64 + $$(CONFIG_TARGET_ROOTFS_PARTSIZE))m
+#   KERNEL			:= kernel-bin | gzip
+#   KERNEL_INITRAMFS := kernel-bin | lzma | \
+# 	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | pad-to 64k
+#   IMAGE/sysupgrade.itb := append-kernel | fit gzip $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb external-static-with-rootfs | pad-rootfs | append-metadata
+#   DTC_FLAGS += -@ --space 32768
+#   SUPPORTED_DEVICES := bananapi,bpi-r3
+# endef
+# TARGET_DEVICES += bananapi_bpi-r3
+
+# # Full
+# define Device/bananapi_bpi-r3
+#   DEVICE_VENDOR := Bananapi
+#   DEVICE_MODEL := BPi-R3
+#   DEVICE_DTS := mt7986a-bananapi-bpi-r3
+#   DEVICE_DTS_CONFIG := config-mt7986a-bananapi-bpi-r3
+#   DEVICE_DTS_OVERLAY:= mt7986a-bananapi-bpi-r3-nor mt7986a-bananapi-bpi-r3-emmc-nor mt7986a-bananapi-bpi-r3-emmc-snand-custom mt7986a-bananapi-bpi-r3-snand
+#   DEVICE_DTS_DIR := ../dts
+#   DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-sfp kmod-usb3 f2fsck mkf2fs
+#   DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth kmod-nvme
+#   DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted
+#   DEVICE_PACKAGES += kmod-crypto-xts kmod-crypto-user cryptsetup
+#   DEVICE_PACKAGES += luci-ssl ethtool-full dnscrypt-proxy2
+#   DEVICE_PACKAGES += kmod-usb-net-rndis kmod-usb-acm usb-modeswitch luci-proto-modemmanager
+#   DEVICE_PACKAGES += keepalived conntrackd
+#   DEVICE_PACKAGES += wireguard-tools kmod-wireguard luci-proto-wireguard
+#   DEVICE_PACKAGES += luci-app-samba4
+#   DEVICE_PACKAGES += luci-app-statistics collectd-mod-wireless collectd-mod-sensors collectd-mod-thermal prometheus-node-exporter-lua
+#   DEVICE_PACKAGES += luci-app-uhttpd luci-app-acl luci-proto-bonding curl
+#   DEVICE_PACKAGES += rtl-sdr gpsd gpsd-clients ntpd ntp-utils
+#   DEVICE_PACKAGES += node node-npm
+#   IMAGES := sysupgrade.itb
+#   KERNEL_INITRAMFS_SUFFIX := -recovery.itb
+#   ARTIFACTS := \
+# 	       emmc-preloader.bin emmc-bl31-uboot.fip \
+# 	       nor-preloader.bin nor-bl31-uboot.fip \
+# 	       sdcard.img.gz \
+# 	       snand-preloader.bin snand-bl31-uboot.fip
+#   ARTIFACT/emmc-preloader.bin	:= bl2 emmc-ddr4
+#   ARTIFACT/emmc-bl31-uboot.fip	:= bl31-uboot bananapi_bpi-r3-emmc
+#   ARTIFACT/nor-preloader.bin	:= bl2 nor-ddr4
+#   ARTIFACT/nor-bl31-uboot.fip	:= bl31-uboot bananapi_bpi-r3-nor
+#   ARTIFACT/snand-preloader.bin	:= bl2 spim-nand-ddr4
+#   ARTIFACT/snand-bl31-uboot.fip	:= bl31-uboot bananapi_bpi-r3-snand
+#   ARTIFACT/sdcard.img.gz	:= mt7986-gpt sdmmc |\
+# 				   pad-to 17k | bl2 sdmmc-ddr4 |\
+# 				   pad-to 6656k | bl31-uboot bananapi_bpi-r3-sdmmc |\
+# 				$(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),\
+# 				   pad-to 12M | append-image-stage initramfs-recovery.itb | check-size 44m |\
+# 				) \
+# 				   pad-to 44M | bl2 spim-nand-ddr4 |\
+# 				   pad-to 45M | bl31-uboot bananapi_bpi-r3-snand |\
+# 				   pad-to 49M | bl2 nor-ddr4 |\
+# 				   pad-to 50M | bl31-uboot bananapi_bpi-r3-nor |\
+# 				   pad-to 51M | bl2 emmc-ddr4 |\
+# 				   pad-to 52M | bl31-uboot bananapi_bpi-r3-emmc |\
+# 				   pad-to 56M | mt7986-gpt emmc |\
+# 				$(if $(CONFIG_TARGET_ROOTFS_SQUASHFS),\
+# 				   pad-to 64M | append-image squashfs-sysupgrade.itb | check-size | gzip \
+# 				)
+#   IMAGE_SIZE := $$(shell expr 64 + $$(CONFIG_TARGET_ROOTFS_PARTSIZE))m
+#   KERNEL			:= kernel-bin | gzip
+#   KERNEL_INITRAMFS := kernel-bin | lzma | \
+# 	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | pad-to 64k
+#   IMAGE/sysupgrade.itb := append-kernel | fit gzip $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb external-static-with-rootfs | pad-rootfs | append-metadata
+#   DTC_FLAGS += -@ --space 32768
+#   SUPPORTED_DEVICES := bananapi,bpi-r3
+# endef
+# TARGET_DEVICES += bananapi_bpi-r3
+
+# Kernel Mod
 define Device/bananapi_bpi-r3
   DEVICE_VENDOR := Bananapi
   DEVICE_MODEL := BPi-R3
@@ -91,16 +203,19 @@ define Device/bananapi_bpi-r3
   DEVICE_DTS_CONFIG := config-mt7986a-bananapi-bpi-r3
   DEVICE_DTS_OVERLAY:= mt7986a-bananapi-bpi-r3-nor mt7986a-bananapi-bpi-r3-emmc-nor mt7986a-bananapi-bpi-r3-emmc-snand-custom mt7986a-bananapi-bpi-r3-snand
   DEVICE_DTS_DIR := ../dts
-  DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-sfp kmod-usb3 e2fsprogs f2fsck mkf2fs
+  DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-usb3 f2fsck mkf2fs
   DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth kmod-nvme
-  DEVICE_PACKAGES += f2fs-tools kmod-fs-f2fs block-mount kmod-usb-storage parted luci-app-samba4
-  DEVICE_PACKAGES += kmod-crypto-ecb kmod-crypto-xts kmod-crypto-misc kmod-crypto-user cryptsetup
-  DEVICE_PACKAGES += collectd-mod-wireless collectd-mod-sensors collectd-mod-thermal luci-app-statistics prometheus-node-exporter-lua
-  DEVICE_PACKAGES += luci-ssl luci-app-uhttpd
-  DEVICE_PACKAGES += keepalived conntrackd dnscrypt-proxy2 
+  DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted
+  DEVICE_PACKAGES += kmod-crypto-user cryptsetup
+  DEVICE_PACKAGES += luci-ssl ethtool-full dnscrypt-proxy2
+  DEVICE_PACKAGES += kmod-usb-net-rndis kmod-usb-acm usb-modeswitch luci-proto-modemmanager
+  DEVICE_PACKAGES += keepalived conntrackd
   DEVICE_PACKAGES += wireguard-tools kmod-wireguard luci-proto-wireguard
-  DEVICE_PACKAGES += curl ethtool-full node node-npm
-  DEVICE_PACKAGES += kmod-usb-net-rndis kmod-usb-acm usb-modeswitch
+  DEVICE_PACKAGES += luci-app-samba4
+  DEVICE_PACKAGES += luci-app-statistics collectd-mod-wireless collectd-mod-sensors collectd-mod-thermal prometheus-node-exporter-lua
+  DEVICE_PACKAGES += luci-app-uhttpd luci-app-acl luci-proto-bonding curl
+  DEVICE_PACKAGES += rtl-sdr gpsd gpsd-clients ntpd ntp-utils
+  DEVICE_PACKAGES += node node-npm
   IMAGES := sysupgrade.itb
   KERNEL_INITRAMFS_SUFFIX := -recovery.itb
   ARTIFACTS := \
