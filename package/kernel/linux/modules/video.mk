@@ -402,6 +402,23 @@ endef
 
 $(eval $(call KernelPackage,drm-radeon))
 
+define KernelPackage/drm-solomon
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=Solomon Display Controller DRM support
+  DEPENDS:=@DISPLAY_SUPPORT +kmod-drm
+  KCONFIG:=CONFIG_DRM_SSD130X=y \
+	CONFIG_DRM_SSD130X_I2C=y \
+	CONFIG_DRM_SSD130X_SPI=y
+  FILES:=$(LINUX_DIR)/drivers/gpu/drm/solomon/solomon.ko
+  AUTOLOAD:=$(call AutoProbe,solomon)
+endef
+
+define KernelPackage/drm-solomon/description
+  Direct Rendering Manager (DRM) support for 	tristate "DRM support for Solomon SSD130x OLED displays
+endef
+
+$(eval $(call KernelPackage,drm-solomon))
+
 #
 # Video Capture
 #
