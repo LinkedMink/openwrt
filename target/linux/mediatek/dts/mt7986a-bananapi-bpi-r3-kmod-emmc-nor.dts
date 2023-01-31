@@ -1,24 +1,14 @@
 /* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
-/**
- * @todo need to understand uboot better and patches to apply custom overlay at boot, build auto-gens config:
-		config-mt7986a-bananapi-bpi-r3-emmc-snand-custom {
-			description = "OpenWrt bananapi_bpi-r3-custom with mt7986a-bananapi-bpi-r3-emmc-snand-custom";
-			kernel = "kernel-1";
-			fdt = "fdt-1", "fdt-mt7986a-bananapi-bpi-r3-emmc-snand-custom";
-			loadables = "rootfs-1";
-			
-			
-		};
- * @see 430-add-bpi-r3.patch
- */
 
 /dts-v1/;
 /plugin/;
 
-/ {
-    compatible = "bananapi,bpi-r3", "mediatek,mt7986a";
+#include "mt7986a-bananapi-bpi-r3-emmc-nor.dts"
 
-    fragment@0 {
+/ {
+    compatible = "bananapi,bpi-r3-kmod", "bananapi,bpi-r3", "mediatek,mt7986a";
+    
+    fragment@2 {
         target = <&fan>;
         /**
         * Cell 0 corresponds to not tripped, 1 to active-low, etc.
@@ -32,4 +22,19 @@
             status = "okay";
         };
     };
+	/*
+    fragment@3 {
+        target = <&i2c0>;
+        
+        __overlay__ {
+            #address-cells = <1>;
+            #size-cells = <0>;
+
+            ssd1306_i2c: oled@3c {
+                compatible = "solomon,ssd1306";
+                reg = <0x3c>;
+            };
+        };
+    };
+	*/
 };

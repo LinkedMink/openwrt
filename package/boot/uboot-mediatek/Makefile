@@ -190,7 +190,7 @@ endef
 define U-Boot/mt7986_bananapi_bpi-r3-emmc
   NAME:=BananaPi BPi-R3
   BUILD_SUBTARGET:=filogic
-  BUILD_DEVICES:=bananapi_bpi-r3 bananapi_bpi-r3-min bananapi_bpi-r3-full
+  BUILD_DEVICES:=bananapi_bpi-r3
   UBOOT_CONFIG:=mt7986a_bpi-r3-emmc
   UBOOT_IMAGE:=u-boot.fip
   BL2_BOOTDEV:=emmc
@@ -202,7 +202,7 @@ endef
 define U-Boot/mt7986_bananapi_bpi-r3-sdmmc
   NAME:=BananaPi BPi-R3
   BUILD_SUBTARGET:=filogic
-  BUILD_DEVICES:=bananapi_bpi-r3 bananapi_bpi-r3-min bananapi_bpi-r3-full
+  BUILD_DEVICES:=bananapi_bpi-r3
   UBOOT_CONFIG:=mt7986a_bpi-r3-sd
   UBOOT_IMAGE:=u-boot.fip
   BL2_BOOTDEV:=sdmmc
@@ -214,7 +214,7 @@ endef
 define U-Boot/mt7986_bananapi_bpi-r3-snand
   NAME:=BananaPi BPi-R3
   BUILD_SUBTARGET:=filogic
-  BUILD_DEVICES:=bananapi_bpi-r3 bananapi_bpi-r3-min bananapi_bpi-r3-full
+  BUILD_DEVICES:=bananapi_bpi-r3
   UBOOT_CONFIG:=mt7986a_bpi-r3-snand
   UBOOT_IMAGE:=u-boot.fip
   BL2_BOOTDEV:=spim-nand
@@ -226,8 +226,61 @@ endef
 define U-Boot/mt7986_bananapi_bpi-r3-nor
   NAME:=BananaPi BPi-R3
   BUILD_SUBTARGET:=filogic
-  BUILD_DEVICES:=bananapi_bpi-r3 bananapi_bpi-r3-min bananapi_bpi-r3-full
+  BUILD_DEVICES:=bananapi_bpi-r3
   UBOOT_CONFIG:=mt7986a_bpi-r3-nor
+  UBOOT_IMAGE:=u-boot.fip
+  BL2_BOOTDEV:=nor
+  BL2_SOC:=mt7986
+  BL2_DDRTYPE:=ddr4
+  DEPENDS:=+trusted-firmware-a-mt7986-nor-ddr4
+  FIP_COMPRESS:=1
+endef
+
+define U-Boot/mt7986_bananapi_bpi-r3-kmod-emmc
+  NAME:=Banana Pi BPi-R3 (Modified)
+  BUILD_SUBTARGET:=filogic
+  BUILD_DEVICES:=bananapi_bpi-r3-kmod
+  UBOOT_CONFIG:=mt7986a_bpi-r3-emmc
+  UENV:=bpi-r3-kmod_emmc
+  UBOOT_IMAGE:=u-boot.fip
+  BL2_BOOTDEV:=emmc
+  BL2_SOC:=mt7986
+  BL2_DDRTYPE:=ddr4
+  DEPENDS:=+trusted-firmware-a-mt7986-emmc-ddr4
+endef
+
+define U-Boot/mt7986_bananapi_bpi-r3-kmod-sdmmc
+  NAME:=Banana Pi BPi-R3 (Modified)
+  BUILD_SUBTARGET:=filogic
+  BUILD_DEVICES:=bananapi_bpi-r3-kmod
+  UBOOT_CONFIG:=mt7986a_bpi-r3-sd
+  UENV:=bpi-r3-kmod_sdmmc
+  UBOOT_IMAGE:=u-boot.fip
+  BL2_BOOTDEV:=sdmmc
+  BL2_SOC:=mt7986
+  BL2_DDRTYPE:=ddr4
+  DEPENDS:=+trusted-firmware-a-mt7986-sdmmc-ddr4
+endef
+
+define U-Boot/mt7986_bananapi_bpi-r3-kmod-snand
+  NAME:=Banana Pi BPi-R3 (Modified)
+  BUILD_SUBTARGET:=filogic
+  BUILD_DEVICES:=bananapi_bpi-r3-kmod
+  UBOOT_CONFIG:=mt7986a_bpi-r3-snand
+  UENV:=bpi-r3-kmod_snand
+  UBOOT_IMAGE:=u-boot.fip
+  BL2_BOOTDEV:=spim-nand
+  BL2_SOC:=mt7986
+  BL2_DDRTYPE:=ddr4
+  DEPENDS:=+trusted-firmware-a-mt7986-spim-nand-ddr4
+endef
+
+define U-Boot/mt7986_bananapi_bpi-r3-kmod-nor
+  NAME:=Banana Pi BPi-R3 (Modified)
+  BUILD_SUBTARGET:=filogic
+  BUILD_DEVICES:=bananapi_bpi-r3-kmod
+  UBOOT_CONFIG:=mt7986a_bpi-r3-nor
+  UENV:=bpi-r3-kmod_nor
   UBOOT_IMAGE:=u-boot.fip
   BL2_BOOTDEV:=nor
   BL2_SOC:=mt7986
@@ -268,6 +321,10 @@ UBOOT_TARGETS := \
 	mt7986_bananapi_bpi-r3-sdmmc \
 	mt7986_bananapi_bpi-r3-snand \
 	mt7986_bananapi_bpi-r3-nor \
+	mt7986_bananapi_bpi-r3-kmod-emmc \
+	mt7986_bananapi_bpi-r3-kmod-sdmmc \
+	mt7986_bananapi_bpi-r3-kmod-snand \
+  mt7986_bananapi_bpi-r3-kmod-nor \
 	mt7986_xiaomi_redmi-router-ax6000 \
 	mt7986_rfb
 

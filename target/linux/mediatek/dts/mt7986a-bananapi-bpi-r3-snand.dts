@@ -9,6 +9,9 @@
 	fragment@0 {
 		target-path = "/soc/spi@1100a000";
 		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
 			nand-flash@0 {
 				compatible = "spi-nand";
 				reg = <0>;
