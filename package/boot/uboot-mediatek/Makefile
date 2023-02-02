@@ -240,8 +240,8 @@ define U-Boot/mt7986_bananapi_bpi-r3-kmod-emmc
   NAME:=Banana Pi BPi-R3 (Modified)
   BUILD_SUBTARGET:=filogic
   BUILD_DEVICES:=bananapi_bpi-r3-kmod
+  BPI_R3_KMOD_MEMORY_TYPE:=emmc
   UBOOT_CONFIG:=mt7986a_bpi-r3-emmc
-  UENV:=bpi-r3-kmod_emmc
   UBOOT_IMAGE:=u-boot.fip
   BL2_BOOTDEV:=emmc
   BL2_SOC:=mt7986
@@ -253,8 +253,8 @@ define U-Boot/mt7986_bananapi_bpi-r3-kmod-sdmmc
   NAME:=Banana Pi BPi-R3 (Modified)
   BUILD_SUBTARGET:=filogic
   BUILD_DEVICES:=bananapi_bpi-r3-kmod
+  BPI_R3_KMOD_MEMORY_TYPE:=sdmmc
   UBOOT_CONFIG:=mt7986a_bpi-r3-sd
-  UENV:=bpi-r3-kmod_sdmmc
   UBOOT_IMAGE:=u-boot.fip
   BL2_BOOTDEV:=sdmmc
   BL2_SOC:=mt7986
@@ -266,8 +266,8 @@ define U-Boot/mt7986_bananapi_bpi-r3-kmod-snand
   NAME:=Banana Pi BPi-R3 (Modified)
   BUILD_SUBTARGET:=filogic
   BUILD_DEVICES:=bananapi_bpi-r3-kmod
+  BPI_R3_KMOD_MEMORY_TYPE:=snand
   UBOOT_CONFIG:=mt7986a_bpi-r3-snand
-  UENV:=bpi-r3-kmod_snand
   UBOOT_IMAGE:=u-boot.fip
   BL2_BOOTDEV:=spim-nand
   BL2_SOC:=mt7986
@@ -279,8 +279,8 @@ define U-Boot/mt7986_bananapi_bpi-r3-kmod-nor
   NAME:=Banana Pi BPi-R3 (Modified)
   BUILD_SUBTARGET:=filogic
   BUILD_DEVICES:=bananapi_bpi-r3-kmod
+  BPI_R3_KMOD_MEMORY_TYPE:=nor
   UBOOT_CONFIG:=mt7986a_bpi-r3-nor
-  UENV:=bpi-r3-kmod_nor
   UBOOT_IMAGE:=u-boot.fip
   BL2_BOOTDEV:=nor
   BL2_SOC:=mt7986
@@ -343,6 +343,13 @@ define Build/fip-image
 		$(PKG_BUILD_DIR)/u-boot.fip
 endef
 
+define Build/append-bpi-r3-kmod-env
+	ls -la $(PKG_BUILD_DIR)
+	cat files/uEnv-bpi-r3-kmod_$(BPI_R3_KMOD_MEMORY_TYPE).txt >> \
+		$(PKG_BUILD_DIR)/bananapi_bpi-r3_$(BPI_R3_KMOD_MEMORY_TYPE)_env
+	cat $(PKG_BUILD_DIR)/bananapi_bpi-r3_$(BPI_R3_KMOD_MEMORY_TYPE)_env
+endef
+
 ifdef CONFIG_TARGET_ramips_mt7621
 define Build/Prepare
 	$(call Build/Prepare/Default)
@@ -357,6 +364,9 @@ endif
 define Build/Configure
 	$(call Build/Configure/U-Boot)
 	sed -i 's/CONFIG_TOOLS_LIBCRYPTO=y/# CONFIG_TOOLS_LIBCRYPTO is not set/' $(PKG_BUILD_DIR)/.config
+ifneq ($(BPI_R3_KMOD_MEMORY_TYPE),)
+	$(call Build/append-bpi-r3-kmod-env)
+endif
 endef
 
 define Build/Compile
