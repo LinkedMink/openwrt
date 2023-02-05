@@ -96,7 +96,7 @@ TARGET_DEVICES += bananapi_bpi-r3
 #   DEVICE_PACKAGES += wireguard-tools kmod-wireguard luci-proto-wireguard
 #   DEVICE_PACKAGES += kmod-drm-solomon
 
-# luci-app-dcwapdl node node-npm
+# node node-npm
 # Kernel Mod Full
 define Device/bananapi_bpi-r3-kmod
   DEVICE_VENDOR := Banana Pi
@@ -105,7 +105,7 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_DTS_CONFIG := config-mt7986a-bananapi-bpi-r3
   DEVICE_DTS_OVERLAY := mt7986a-bananapi-bpi-r3-kmod-nor mt7986a-bananapi-bpi-r3-kmod-emmc-nor mt7986a-bananapi-bpi-r3-kmod-emmc-snand mt7986a-bananapi-bpi-r3-kmod-snand
   DEVICE_DTS_DIR := ../dts
-  DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-usb3 f2fsck mkf2fs
+  DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-usb3 f2fsck mkf2fs kmod-sfp
   DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth kmod-nvme
   DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted
   DEVICE_PACKAGES += kmod-crypto-user cryptsetup
