@@ -111,7 +111,7 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_PACKAGES += kmod-crypto-user cryptsetup
   DEVICE_PACKAGES += luci-ssl dnscrypt-proxy2
   DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full
-  DEVICE_PACKAGES += -wpad-basic-wolfssl wpad-wolfssl
+  DEVICE_PACKAGES += -wpad-basic-mbedtls wpad-mbedtls
   DEVICE_PACKAGES += luci-app-dcwapdl
   DEVICE_PACKAGES += kmod-usb-net-rndis kmod-usb-acm usb-modeswitch luci-proto-modemmanager kmod-usb-net-cdc-mbim
   DEVICE_PACKAGES += keepalived conntrackd
