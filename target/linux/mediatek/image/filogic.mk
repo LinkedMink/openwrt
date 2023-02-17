@@ -94,7 +94,6 @@ TARGET_DEVICES += bananapi_bpi-r3
 #   DEVICE_PACKAGES += kmod-usb-net-rndis kmod-usb-acm usb-modeswitch luci-proto-modemmanager
 #   DEVICE_PACKAGES += keepalived conntrackd
 #   DEVICE_PACKAGES += wireguard-tools kmod-wireguard luci-proto-wireguard
-#   DEVICE_PACKAGES += kmod-drm-solomon
 
 # node node-npm
 # Kernel Mod Full
@@ -154,7 +153,7 @@ define Device/bananapi_bpi-r3-kmod
   KERNEL_INITRAMFS := kernel-bin | lzma | \
 	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | pad-to 64k
   IMAGE/sysupgrade.itb := append-kernel | fit gzip $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb external-static-with-rootfs | pad-rootfs | append-metadata
-  DTC_FLAGS += -@ --space 32768
+  DTC_FLAGS += -@ --space 49152
   SUPPORTED_DEVICES += bananapi,bpi-r3
 endef
 TARGET_DEVICES += bananapi_bpi-r3-kmod

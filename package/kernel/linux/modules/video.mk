@@ -183,6 +183,22 @@ endef
 $(eval $(call KernelPackage,fb-sys-ram))
 
 
+define KernelPackage/fb-ssd1307
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=Framebuffer driver for Solomon SSD130x
+  DEPENDS:=+kmod-fb +kmod-fb-sys-fops +kmod-fb-sys-ram +kmod-backlight +kmod-i2c-core
+  KCONFIG:=CONFIG_FB_SSD1307
+  FILES:=$(LINUX_DIR)/drivers/video/fbdev/ssd1307fb.ko
+  AUTOLOAD:=$(call AutoLoad,07,fb_ssd1307)
+endef
+
+define KernelPackage/fb-ssd1307/description
+  Framebuffer driver for Solomon SSD130x in I2C mode - ssd1305fb, ssd1306fb, ssd1307fb, ssd1309fb
+endef
+
+$(eval $(call KernelPackage,fb-ssd1307))
+
+
 define KernelPackage/fb-tft
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=Support for small TFT LCD display modules
@@ -402,22 +418,6 @@ endef
 
 $(eval $(call KernelPackage,drm-radeon))
 
-define KernelPackage/drm-solomon
-  SUBMENU:=$(VIDEO_MENU)
-  TITLE:=Solomon Display Controller DRM support
-  DEPENDS:=@DISPLAY_SUPPORT +kmod-drm
-  KCONFIG:=CONFIG_DRM_SSD130X=y \
-	CONFIG_DRM_SSD130X_I2C=y \
-	CONFIG_DRM_SSD130X_SPI=y
-  FILES:=$(LINUX_DIR)/drivers/gpu/drm/solomon/solomon.ko
-  AUTOLOAD:=$(call AutoProbe,solomon)
-endef
-
-define KernelPackage/drm-solomon/description
-  Direct Rendering Manager (DRM) support for 	tristate "DRM support for Solomon SSD130x OLED displays
-endef
-
-$(eval $(call KernelPackage,drm-solomon))
 
 #
 # Video Capture
