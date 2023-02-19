@@ -1,16 +1,4 @@
 /* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
-/**
- * @todo need to understand uboot better and patches to apply custom overlay at boot, build auto-gens config:
-		config-mt7986a-bananapi-bpi-r3-emmc-snand-custom {
-			description = "OpenWrt bananapi_bpi-r3-custom with mt7986a-bananapi-bpi-r3-emmc-snand-custom";
-			kernel = "kernel-1";
-			fdt = "fdt-1", "fdt-mt7986a-bananapi-bpi-r3-emmc-snand-custom";
-			loadables = "rootfs-1";
-			
-			
-		};
- * @see 430-add-bpi-r3.patch
- */
 
 /dts-v1/;
 /plugin/;
@@ -29,9 +17,7 @@
         * @see ../files-5.15/arch/arm64/boot/dts/mediatek/mt7986a.dtsi#L701
         */
         __overlay__ {
-            pwms = <&pwm 0 10000 0>;
             cooling-levels = <0 0 0 0>;
-            status = "okay";
         };
     };
 
@@ -39,8 +25,8 @@
         target = <&i2c0>;
         
         __overlay__ {
-            status = "okay";
-
+            clock-frequency = <100000>;
+            
             #address-cells = <1>;
             #size-cells = <0>;
 

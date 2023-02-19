@@ -84,18 +84,6 @@ define Device/bananapi_bpi-r3
 endef
 TARGET_DEVICES += bananapi_bpi-r3
 
-# Kernel Mod Minimal
-#   DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-usb3 f2fsck mkf2fs
-#   DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth kmod-nvme
-#   DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted
-#   DEVICE_PACKAGES += kmod-crypto-user cryptsetup
-#   DEVICE_PACKAGES += luci-ssl dnscrypt-proxy2
-#   DEVICE_PACKAGES += ethtool-full curl
-#   DEVICE_PACKAGES += kmod-usb-net-rndis kmod-usb-acm usb-modeswitch luci-proto-modemmanager
-#   DEVICE_PACKAGES += keepalived conntrackd
-#   DEVICE_PACKAGES += wireguard-tools kmod-wireguard luci-proto-wireguard
-
-# node node-npm
 # Kernel Mod Full
 define Device/bananapi_bpi-r3-kmod
   DEVICE_VENDOR := Banana Pi
@@ -119,6 +107,7 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_PACKAGES += luci-app-statistics collectd-mod-wireless collectd-mod-sensors collectd-mod-thermal prometheus-node-exporter-lua
   DEVICE_PACKAGES += luci-app-uhttpd luci-app-acl luci-proto-bonding luci-app-opkg luci-theme-material
   DEVICE_PACKAGES += rtl-sdr
+  DEVICE_PACKAGES += node node-npm
   IMAGES := sysupgrade.itb
   KERNEL_INITRAMFS_SUFFIX := -recovery.itb
   ARTIFACTS := \

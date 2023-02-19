@@ -17,9 +17,7 @@
         * @see ../files-5.15/arch/arm64/boot/dts/mediatek/mt7986a.dtsi#L701
         */
         __overlay__ {
-            pwms = <&pwm 0 10000 0>;
             cooling-levels = <0 0 0 0>;
-            status = "okay";
         };
     };
 
@@ -27,8 +25,8 @@
         target = <&i2c0>;
         
         __overlay__ {
-            status = "okay";
-
+            clock-frequency = <100000>;
+            
             #address-cells = <1>;
             #size-cells = <0>;
 

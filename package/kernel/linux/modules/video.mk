@@ -418,7 +418,6 @@ endef
 
 $(eval $(call KernelPackage,drm-radeon))
 
-
 #
 # Video Capture
 #
