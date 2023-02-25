@@ -97,7 +97,7 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted
   DEVICE_PACKAGES += kmod-crypto-user cryptsetup
   DEVICE_PACKAGES += luci-ssl dnscrypt-proxy2
-  DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full
+  DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full i2c-tools
   DEVICE_PACKAGES += -wpad-basic-mbedtls wpad-mbedtls
   DEVICE_PACKAGES += luci-app-dcwapdl
   DEVICE_PACKAGES += kmod-usb-net-rndis kmod-usb-acm usb-modeswitch luci-proto-modemmanager kmod-usb-net-cdc-mbim
@@ -107,7 +107,6 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_PACKAGES += luci-app-statistics collectd-mod-wireless collectd-mod-sensors collectd-mod-thermal prometheus-node-exporter-lua
   DEVICE_PACKAGES += luci-app-uhttpd luci-app-acl luci-proto-bonding luci-app-opkg luci-theme-material
   DEVICE_PACKAGES += rtl-sdr
-  DEVICE_PACKAGES += node node-npm
   IMAGES := sysupgrade.itb
   KERNEL_INITRAMFS_SUFFIX := -recovery.itb
   ARTIFACTS := \
