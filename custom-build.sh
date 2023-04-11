@@ -1,37 +1,14 @@
 #!/usr/bin/env bash
 
-# Constants
-C_GREEN='\033[0;32m'
-C_L_CYAN='\033[1;36m'
-C_YELLOW='\033[1;33m'
-C_RESET='\033[0m'
+source custom-utility.sh
 
 # Option Defaults
-LOG_LEVEL="1" # 1-99, s, sc
-LOG_FILE="build.log"
-THREADS=$(($(nproc) - 2))
+LOG_LEVEL_BUILD="1" # 1-99, s, sc
+LOG_FILE_BUILD="build.log"
+THREADS=$(($(nproc) - 3))
 CLEAN=
 
-# Functions
-logInfo() {
-  echo -e "${C_L_CYAN}INFO:${C_RESET} $1"
-}
-
-logWarn() {
-  echo -e "${C_YELLOW}WARN:${C_RESET} $1"
-}
-
-installDependency() {
-  if command -v $1 &>/dev/null; then
-    logInfo "Command found: $1"
-    return 0
-  fi
-
-  logWarn "Missing command, install apt dependency: cmd=$1, package=$2"
-  sudo apt install $2
-}
-
-installDependency unbuffer expect
+installDependencyIfNotFound unbuffer expect
 
 # Parse Args
 VALID_ARGS=$(getopt -o l:o:t:c: --long log:,output:,threads:,clean: -- "$@")
@@ -43,11 +20,11 @@ eval set -- "$VALID_ARGS"
 while [ : ]; do
   case "$1" in
   -l | --log)
-    LOG_LEVEL=$2
+    LOG_LEVEL_BUILD=$2
     shift 2
     ;;
   -o | --output)
-    LOG_FILE=$2
+    LOG_FILE_BUILD=$2
     shift 2
     ;;
   -t | --threads)
@@ -66,24 +43,36 @@ while [ : ]; do
 done
 
 # Pre-Build Clean
-if [ "$CLEAN" = f ]; then
-  logInfo "Pre-build - Full cleaning"
-  make clean
-elif [ "$CLEAN" = p ]; then
+# https://openwrt.org/docs/guide-developer/toolchain/use-buildsystem#cleaning_up
+if [ "$CLEAN" = kernel ]; then
   logInfo "Pre-build - Clean kernel targets only"
   make target/linux/clean
   make package/boot/uboot-mediatek/clean
+  for makeTarget in package/kernel/*; do
+    make package/kernel/$makeTarget/clean
+  done
+elif [ "$CLEAN" = package ]; then
+  logInfo "Pre-build - Clean all architecture packages"
+  make clean
+elif [ "$CLEAN" = target ]; then
+  logInfo "Pre-build - Clean all architecture specific targets"
+  make targetclean
+elif [ "$CLEAN" = build ]; then
+  logInfo "Pre-build - Clean all local tools and architecture targets"
+  make dirclean
 else
-  logInfo "Pre-build - No cleaning performed, f=full, p=partial"
+  logInfo "Pre-build - Clean not performed kernel|package|target|build"
 fi
 
 rm $LOG_FILE
 
 # Build
-logInfo "---------- START - ${C_YELLOW}Running build with params: LOG_LEVEL=${LOG_LEVEL} LOG_FILE=${LOG_FILE} THREADS=${THREADS}${C_RESET} ----------"
+
+logInfo "---------- Build START ----------"
+logInfo "Running build with params: --log ${C_YELLOW}${LOG_LEVEL_BUILD}${C_RESET} --output ${C_YELLOW}${LOG_FILE_BUILD}${C_RESET} --threads ${C_YELLOW}${THREADS}${C_RESET}"
 
 time unbuffer \
-  make -j $THREADS V=$LOG_LEVEL |
-  tee $LOG_FILE
+  make -j $THREADS V=$LOG_LEVEL_BUILD |
+  tee $LOG_FILE_BUILD
 
-logInfo "---------- END  - ${C_GREEN}Success${C_RESET}  ----------"
+logInfo "---------- Build -END- ----------"
