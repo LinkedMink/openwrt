@@ -9,6 +9,9 @@
 	fragment@0 {
 		target-path = "/soc/spi@1100a000";
 		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
 			flash@0 {
 				compatible = "jedec,spi-nor";
 				reg = <0>;

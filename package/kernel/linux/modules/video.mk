@@ -183,6 +183,22 @@ endef
 $(eval $(call KernelPackage,fb-sys-ram))
 
 
+define KernelPackage/fb-ssd1307
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=Framebuffer driver for Solomon SSD130x
+  DEPENDS:=+kmod-fb +kmod-fb-sys-fops +kmod-fb-sys-ram +kmod-backlight +kmod-i2c-core
+  KCONFIG:=CONFIG_FB_SSD1307
+  FILES:=$(LINUX_DIR)/drivers/video/fbdev/ssd1307fb.ko
+  AUTOLOAD:=$(call AutoLoad,07,fb_ssd1307)
+endef
+
+define KernelPackage/fb-ssd1307/description
+  Framebuffer driver for Solomon SSD130x in I2C mode - ssd1305fb, ssd1306fb, ssd1307fb, ssd1309fb
+endef
+
+$(eval $(call KernelPackage,fb-ssd1307))
+
+
 define KernelPackage/fb-tft
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=Support for small TFT LCD display modules
