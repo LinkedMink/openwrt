@@ -5,7 +5,7 @@ source custom-utility.sh
 # Option Defaults
 LOG_LEVEL_BUILD="1" # 1-99, s, sc
 LOG_FILE_BUILD="build.log"
-THREADS=$(($(nproc) - 3))
+THREADS=$(($(nproc) - $(nproc) / 4))
 CLEAN=
 
 installDependencyIfNotFound unbuffer expect
