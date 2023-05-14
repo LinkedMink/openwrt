@@ -2,16 +2,18 @@
 
 source custom-utility.sh
 
-# Option Defaults
+#region Option Defaults
+
 LOG_LEVEL_BUILD="1" # 1-99, s, sc
 LOG_FILE_BUILD="build.log"
 THREADS=$(($(nproc) - $(nproc) / 4))
 CLEAN=
+DOWNLOAD=false
 
-installDependencyIfNotFound unbuffer expect
+#endregion
+#region Parse Args
 
-# Parse Args
-VALID_ARGS=$(getopt -o l:o:t:c: --long log:,output:,threads:,clean: -- "$@")
+VALID_ARGS=$(getopt -o l:o:t:c:d: --long log:,output:,threads:,clean:,download: -- "$@")
 if [[ $? -ne 0 ]]; then
   exit 1
 fi
@@ -35,6 +37,10 @@ while [ : ]; do
     CLEAN=$2
     shift 2
     ;;
+  -d | --download)
+    DOWNLOAD=true
+    shift
+    ;;
   --)
     shift
     break
@@ -42,7 +48,11 @@ while [ : ]; do
   esac
 done
 
-# Pre-Build Clean
+#endregion
+#region Pre-Build Clean and Preparation
+
+installDependencyIfNotFound unbuffer expect
+
 # https://openwrt.org/docs/guide-developer/toolchain/use-buildsystem#cleaning_up
 if [ "$CLEAN" = kernel ]; then
   logInfo "Pre-build - Clean kernel targets only"
@@ -64,15 +74,25 @@ else
   logInfo "Pre-build - Clean not performed kernel|package|target|build"
 fi
 
-rm $LOG_FILE
+if [ "$DOWNLOAD" = true ]; then
+  make download
+fi
 
-# Build
+if [ -f $LOG_FILE ]; then
+  rm $LOG_FILE
+fi
+
+#endregion
+#region Build
 
 logInfo "---------- Build START ----------"
 logInfo "Running build with params: --log ${C_YELLOW}${LOG_LEVEL_BUILD}${C_RESET} --output ${C_YELLOW}${LOG_FILE_BUILD}${C_RESET} --threads ${C_YELLOW}${THREADS}${C_RESET}"
 
+export IGNORE_ERRORS=1
 time unbuffer \
   make -j $THREADS V=$LOG_LEVEL_BUILD |
   tee $LOG_FILE_BUILD
 
 logInfo "---------- Build -END- ----------"
+
+#endregion

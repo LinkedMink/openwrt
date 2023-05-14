@@ -100,6 +100,9 @@ define Device/bananapi_bpi-r3
 endef
 TARGET_DEVICES += bananapi_bpi-r3
 
+#  DEVICE_PACKAGES += kmod-usb-net-rndis kmod-usb-acm usb-modeswitch luci-proto-modemmanager kmod-usb-net-cdc-mbim
+#  DEVICE_PACKAGES += node node-npm
+#  DEVICE_PACKAGES += luci-app-samba4
 # Kernel Mod Full
 define Device/bananapi_bpi-r3-kmod
   DEVICE_VENDOR := Banana Pi
@@ -108,7 +111,7 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_DTS_CONFIG := config-mt7986a-bananapi-bpi-r3
   DEVICE_DTS_OVERLAY := mt7986a-bananapi-bpi-r3-kmod-nor mt7986a-bananapi-bpi-r3-kmod-emmc-nor mt7986a-bananapi-bpi-r3-kmod-emmc-snand mt7986a-bananapi-bpi-r3-kmod-snand
   DEVICE_DTS_DIR := ../dts
-  DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-usb3 f2fsck mkf2fs kmod-sfp
+  DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-usb3 f2fsck mkf2fs kmod-sfp kmod-mt7986-firmware mt7986-wo-firmware
   DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth kmod-nvme
   DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted
   DEVICE_PACKAGES += kmod-crypto-user cryptsetup
@@ -116,10 +119,8 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full i2c-tools
   DEVICE_PACKAGES += -wpad-basic-mbedtls wpad-mbedtls
   DEVICE_PACKAGES += luci-app-dcwapdl
-  DEVICE_PACKAGES += kmod-usb-net-rndis kmod-usb-acm usb-modeswitch luci-proto-modemmanager kmod-usb-net-cdc-mbim
   DEVICE_PACKAGES += keepalived conntrackd
   DEVICE_PACKAGES += wireguard-tools kmod-wireguard luci-proto-wireguard
-  DEVICE_PACKAGES += luci-app-samba4
   DEVICE_PACKAGES += luci-app-statistics collectd-mod-wireless collectd-mod-sensors collectd-mod-thermal prometheus-node-exporter-lua
   DEVICE_PACKAGES += luci-app-uhttpd luci-app-acl luci-proto-bonding luci-app-opkg luci-theme-material
   DEVICE_PACKAGES += rtl-sdr

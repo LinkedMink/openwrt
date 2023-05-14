@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
+#region Constants
 
-# Constants
 C_RED='\033[1;31m'
 C_GREEN='\033[1;32m'
 C_YELLOW='\033[1;33m'
@@ -14,10 +14,14 @@ LOG_LEVELS[Warn]=1
 LOG_LEVELS[Info]=2
 LOG_LEVELS[Debug]=3
 
-# Environment Variables
+#endregion
+#region Environment Variables with Defaults
+
 LOG_LEVEL="${LOG_LEVEL:-2}"
 
-# Functions
+#endregion
+#region Functions
+
 logError() {
   if [[ $LOG_LEVEL -ge ${LOG_LEVELS[Error]} ]]; then
     echo -e "${C_RED}ERROR:${C_RESET} $1"
@@ -26,13 +30,13 @@ logError() {
 
 logWarn() {
   if [[ $LOG_LEVEL -ge ${LOG_LEVELS[Warn]} ]]; then
-    echo -e "${C_YELLOW}WARN:${C_RESET}  $1"
+    echo -e "${C_YELLOW}WARN:${C_RESET} $1"
   fi
 }
 
 logInfo() {
   if [[ $LOG_LEVEL -ge ${LOG_LEVELS[Info]} ]]; then
-    echo -e "${C_CYAN}INFO:${C_RESET}  $1"
+    echo -e "${C_CYAN}INFO:${C_RESET} $1"
   fi
 }
 
@@ -43,11 +47,16 @@ logDebug() {
 }
 
 installDependencyIfNotFound() {
-  if command -v $1 &>/dev/null; then
-    logInfo "Command found: $1"
+  commandName=$1
+  packageName=${2:-${commandName}}
+
+  if command -v $commandName &>/dev/null; then
+    logInfo "Command found: $commandName"
     return 0
   fi
 
-  logWarn "Missing command, install apt dependency: cmd=$1, package=$2"
-  sudo apt install $2
+  logWarn "Missing command, install apt dependency: cmd=$commandName, package=$packageName"
+  sudo apt install $packageName
 }
+
+#endregion
