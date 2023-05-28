@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source custom-utility.sh
+source lm-utility.sh
 
 #region Option Defaults
 
@@ -78,9 +78,7 @@ if [ "$DOWNLOAD" = true ]; then
   make download
 fi
 
-if [ -f $LOG_FILE ]; then
-  rm $LOG_FILE
-fi
+rmIfExist $LOG_FILE_BUILD
 
 #endregion
 #region Build

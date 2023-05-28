@@ -59,4 +59,10 @@ installDependencyIfNotFound() {
   sudo apt install $packageName
 }
 
+rmIfExist() {
+  if [ -e $1 ]; then
+    rm $1
+  fi
+}
+
 #endregion
