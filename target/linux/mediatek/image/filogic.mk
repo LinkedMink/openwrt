@@ -142,6 +142,7 @@ TARGET_DEVICES += bananapi_bpi-r3
 #  DEVICE_PACKAGES += kmod-usb-net-rndis kmod-usb-acm usb-modeswitch luci-proto-modemmanager kmod-usb-net-cdc-mbim
 #  DEVICE_PACKAGES += node node-npm
 #  DEVICE_PACKAGES += luci-app-samba4
+#  DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full i2c-tools
 # Kernel Mod Full
 define Device/bananapi_bpi-r3-kmod
   DEVICE_VENDOR := Banana Pi
@@ -155,7 +156,7 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted
   DEVICE_PACKAGES += kmod-crypto-user cryptsetup
   DEVICE_PACKAGES += luci-ssl dnscrypt-proxy2
-  DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full i2c-tools
+  DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime i2c-tools
   DEVICE_PACKAGES += -wpad-basic-mbedtls wpad-mbedtls
   DEVICE_PACKAGES += luci-app-dcwapdl
   DEVICE_PACKAGES += keepalived conntrackd
@@ -170,24 +171,24 @@ define Device/bananapi_bpi-r3-kmod
 	       nor-preloader.bin nor-bl31-uboot.fip \
 	       sdcard.img.gz \
 	       snand-preloader.bin snand-bl31-uboot.fip
-  ARTIFACT/emmc-preloader.bin	:= bl2 emmc-ddr4
-  ARTIFACT/emmc-bl31-uboot.fip	:= bl31-uboot bananapi_bpi-r3-kmod-emmc
-  ARTIFACT/nor-preloader.bin	:= bl2 nor-ddr4
-  ARTIFACT/nor-bl31-uboot.fip	:= bl31-uboot bananapi_bpi-r3-kmod-nor
-  ARTIFACT/snand-preloader.bin	:= bl2 spim-nand-ddr4
-  ARTIFACT/snand-bl31-uboot.fip	:= bl31-uboot bananapi_bpi-r3-kmod-snand
+  ARTIFACT/emmc-preloader.bin	:= mt7986-bl2 emmc-ddr4
+  ARTIFACT/emmc-bl31-uboot.fip	:= mt7986-bl31-uboot bananapi_bpi-r3-kmod-emmc
+  ARTIFACT/nor-preloader.bin	:= mt7986-bl2 nor-ddr4
+  ARTIFACT/nor-bl31-uboot.fip	:= mt7986-bl31-uboot bananapi_bpi-r3-kmod-nor
+  ARTIFACT/snand-preloader.bin	:= mt7986-bl2 spim-nand-ddr4
+  ARTIFACT/snand-bl31-uboot.fip	:= mt7986-bl31-uboot bananapi_bpi-r3-kmod-snand
   ARTIFACT/sdcard.img.gz	:= mt7986-gpt sdmmc |\
-				   pad-to 17k | bl2 sdmmc-ddr4 |\
-				   pad-to 6656k | bl31-uboot bananapi_bpi-r3-kmod-sdmmc |\
+				   pad-to 17k | mt7986-bl2 sdmmc-ddr4 |\
+				   pad-to 6656k | mt7986-bl31-uboot bananapi_bpi-r3-kmod-sdmmc |\
 				$(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),\
 				   pad-to 12M | append-image-stage initramfs-recovery.itb | check-size 44m |\
 				) \
-				   pad-to 44M | bl2 spim-nand-ddr4 |\
-				   pad-to 45M | bl31-uboot bananapi_bpi-r3-kmod-snand |\
-				   pad-to 49M | bl2 nor-ddr4 |\
-				   pad-to 50M | bl31-uboot bananapi_bpi-r3-kmod-nor |\
-				   pad-to 51M | bl2 emmc-ddr4 |\
-				   pad-to 52M | bl31-uboot bananapi_bpi-r3-kmod-emmc |\
+				   pad-to 44M | mt7986-bl2 spim-nand-ddr4 |\
+				   pad-to 45M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-snand |\
+				   pad-to 49M | mt7986-bl2 nor-ddr4 |\
+				   pad-to 50M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-nor |\
+				   pad-to 51M | mt7986-bl2 emmc-ddr4 |\
+				   pad-to 52M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-emmc |\
 				   pad-to 56M | mt7986-gpt emmc |\
 				$(if $(CONFIG_TARGET_ROOTFS_SQUASHFS),\
 				   pad-to 64M | append-image squashfs-sysupgrade.itb | check-size | gzip \
