@@ -86,7 +86,7 @@ rmIfExist $LOG_FILE_BUILD
 logInfo "---------- Build START ----------"
 logInfo "Running build with params: --log ${C_YELLOW}${LOG_LEVEL_BUILD}${C_RESET} --output ${C_YELLOW}${LOG_FILE_BUILD}${C_RESET} --threads ${C_YELLOW}${THREADS}${C_RESET}"
 
-export IGNORE_ERRORS=1
+# export IGNORE_ERRORS=1
 time unbuffer \
   make -j $THREADS V=$LOG_LEVEL_BUILD |
   tee $LOG_FILE_BUILD

@@ -34,9 +34,13 @@ tee -a .config <<EOF
 CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_bananapi_bpi-r3-kmod=y
 CONFIG_TARGET_DEVICE_PACKAGES_mediatek_filogic_DEVICE_bananapi_bpi-r3-kmod=""
 CONFIG_TARGET_OPTIONS=y
-CONFIG_TARGET_OPTIMIZATION="-O3 -pipe -mcpu=cortex-a53 -Wno-error"
 CONFIG_TARGET_ALL_PROFILES=n
+CONFIG_TARGET_PREINIT_IP="192.168.128.163"
+CONFIG_TARGET_PREINIT_NETMASK="255.255.255.0"
+CONFIG_TARGET_PREINIT_BROADCAST="192.168.128.255"
 EOF
+
+# CONFIG_TARGET_OPTIMIZATION="-O3 -pipe -mcpu=cortex-a53 -Wno-error"
 
 logInfo "Generate complete default config: .config"
 

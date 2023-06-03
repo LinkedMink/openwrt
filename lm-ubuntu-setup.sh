@@ -22,7 +22,7 @@ logInfo "Setup build configuration for forked repo"
 
 git remote add upstream $OPENWRT_GIT_REPO_URL
 
-./reset-extended-filogic-config.sh
+./lm-reset-filogic-config.sh
 
 logInfo "Pre-download sources for build step"
 

@@ -151,20 +151,23 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_DTS_CONFIG := config-mt7986a-bananapi-bpi-r3
   DEVICE_DTS_OVERLAY := mt7986a-bananapi-bpi-r3-kmod-nor mt7986a-bananapi-bpi-r3-kmod-emmc-nor mt7986a-bananapi-bpi-r3-kmod-emmc-snand mt7986a-bananapi-bpi-r3-kmod-snand
   DEVICE_DTS_DIR := ../dts
-  DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-usb3 f2fsck mkf2fs kmod-sfp kmod-mt7986-firmware mt7986-wo-firmware
+  DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-mt7986-firmware kmod-sfp kmod-usb3 f2fsck mkf2fs mt7986-wo-firmware
   DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth kmod-nvme
-  DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted
+  DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted fdisk
   DEVICE_PACKAGES += kmod-crypto-user cryptsetup
   DEVICE_PACKAGES += luci-ssl dnscrypt-proxy2
-  DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime i2c-tools
+  DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full i2c-tools
   DEVICE_PACKAGES += -wpad-basic-mbedtls wpad-mbedtls
   DEVICE_PACKAGES += luci-app-dcwapdl
   DEVICE_PACKAGES += keepalived conntrackd
   DEVICE_PACKAGES += wireguard-tools kmod-wireguard luci-proto-wireguard
+  DEVICE_PACKAGES += luci-app-samba4
   DEVICE_PACKAGES += luci-app-statistics collectd-mod-wireless collectd-mod-sensors collectd-mod-thermal prometheus-node-exporter-lua
   DEVICE_PACKAGES += luci-app-uhttpd luci-app-acl luci-proto-bonding luci-app-opkg luci-theme-material
   DEVICE_PACKAGES += rtl-sdr
+  DEVICE_PACKAGES += node node-npm
   IMAGES := sysupgrade.itb
+  KERNEL_LOADADDR := 0x44000000
   KERNEL_INITRAMFS_SUFFIX := -recovery.itb
   ARTIFACTS := \
 	       emmc-preloader.bin emmc-bl31-uboot.fip \
@@ -191,8 +194,9 @@ define Device/bananapi_bpi-r3-kmod
 				   pad-to 52M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-emmc |\
 				   pad-to 56M | mt7986-gpt emmc |\
 				$(if $(CONFIG_TARGET_ROOTFS_SQUASHFS),\
-				   pad-to 64M | append-image squashfs-sysupgrade.itb | check-size | gzip \
-				)
+				   pad-to 64M | append-image squashfs-sysupgrade.itb | check-size |\
+				) \
+				  gzip
   IMAGE_SIZE := $$(shell expr 64 + $$(CONFIG_TARGET_ROOTFS_PARTSIZE))m
   KERNEL			:= kernel-bin | gzip
   KERNEL_INITRAMFS := kernel-bin | lzma | \
