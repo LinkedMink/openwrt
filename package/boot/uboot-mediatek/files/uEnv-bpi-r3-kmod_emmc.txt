@@ -2,4 +2,5 @@ bootfile=openwrt-mediatek-filogic-bananapi_bpi-r3-kmod-initramfs-recovery.itb
 bootfile_bl2=openwrt-mediatek-filogic-bananapi_bpi-r3-kmod-emmc-preloader.bin
 bootfile_fip=openwrt-mediatek-filogic-bananapi_bpi-r3-kmod-emmc-bl31-uboot.fip
 bootfile_upg=openwrt-mediatek-filogic-bananapi_bpi-r3-kmod-squashfs-sysupgrade.itb
-boot_update_conf=if nand info ; then setenv bootconf config-mt7986a-bananapi-bpi-r3-kmod-emmc-snand ; else setenv bootconf config-mt7986a-bananapi-bpi-r3-kmod-emmc-nor ; fi
+bootconf_kmod=mt7986a-bananapi-bpi-r3-kmod
+boot_update_conf=if nand info ; then setenv bootconf $bootconf_base#$bootconf_emmc#$bootconf_nand#$bootconf_kmod ; else setenv bootconf $bootconf_base#$bootconf_emmc#$bootconf_nor#$bootconf_kmod ; fi

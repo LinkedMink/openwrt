@@ -2,6 +2,7 @@
 
 IMAGE_KERNEL = $(word 1,$^)
 IMAGE_ROOTFS = $(word 2,$^)
+FIT_ALIGN_HEX_BYTES=1000
 
 define ModelNameLimit16
 $(shell printf %.16s "$(word 2, $(subst _, ,$(1)))")
@@ -310,8 +311,16 @@ define Build/fit
 		$(if $(DEVICE_DTS_OVERLAY),$(foreach dtso,$(DEVICE_DTS_OVERLAY), -O $(dtso):$(KERNEL_BUILD_DIR)/image-$(dtso).dtbo)) \
 		-c $(if $(DEVICE_DTS_CONFIG),$(DEVICE_DTS_CONFIG),"config-1") \
 		-A $(LINUX_KARCH) -v $(LINUX_VERSION)
+	$(eval its_size=$(shell stat -L -c %s $@.its))
+	@echo "fit its_size: $(its_size)"
+	$(eval fit_align_multiple=$(shell echo $$(( $(its_size) / 16#$(FIT_ALIGN_HEX_BYTES) + 1 )) ))
+	@echo "fit fit_align_multiple: $(fit_align_multiple)"
+	$(eval fit_data_offset=$(shell echo $$(( $(fit_align_multiple) * 16#$(FIT_ALIGN_HEX_BYTES) )) ))
+	@echo "fit fit_data_offset: $(fit_data_offset)"
+	$(eval fit_data_offset_hex=$(shell printf "%x\n" $(fit_data_offset)))
+	@echo "fit fit_data_offset_hex: $(fit_data_offset_hex)"
 	PATH=$(LINUX_DIR)/scripts/dtc:$(PATH) mkimage $(if $(findstring external,$(word 3,$(1))),\
-		-E -B 0x1000 $(if $(findstring static,$(word 3,$(1))),-p 0x1000)) -f $@.its $@.new
+		-E -B 0x$(FIT_ALIGN_HEX_BYTES) $(if $(findstring static,$(word 3,$(1))),-p 0x$(fit_data_offset_hex))) -f $@.its $@.new
 	@mv $@.new $@
 endef
 

@@ -31,6 +31,8 @@ logInfo "Modify base filogic build config: .config"
 sed -i '/CONFIG_TARGET_DEVICE/d' .config
 sed -i '/CONFIG_TARGET_ALL_PROFILES/d' .config
 tee -a .config <<EOF
+CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_bananapi_bpi-r3=y
+CONFIG_TARGET_DEVICE_PACKAGES_mediatek_filogic_DEVICE_bananapi_bpi-r3=""
 CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_bananapi_bpi-r3-kmod=y
 CONFIG_TARGET_DEVICE_PACKAGES_mediatek_filogic_DEVICE_bananapi_bpi-r3-kmod=""
 CONFIG_TARGET_OPTIONS=y
