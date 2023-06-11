@@ -146,13 +146,14 @@ TARGET_DEVICES += bananapi_bpi-r3
 #  DEVICE_PACKAGES += luci-app-samba4
 #  DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full i2c-tools
 #  DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth 
+# DEVICE_PACKAGES += rtl-sdr
 # Kernel Mod Full
 define Device/bananapi_bpi-r3-kmod
   DEVICE_VENDOR := Banana Pi
   DEVICE_MODEL := BPi-R3 (Modified)
   DEVICE_DTS := mt7986a-bananapi-bpi-r3
   DEVICE_DTS_CONFIG := config-mt7986a-bananapi-bpi-r3
-  DEVICE_DTS_OVERLAY:= mt7986a-bananapi-bpi-r3-emmc mt7986a-bananapi-bpi-r3-nand mt7986a-bananapi-bpi-r3-nor mt7986a-bananapi-bpi-r3-sd mt7986a-bananapi-bpi-r3-kmod
+  DEVICE_DTS_OVERLAY:= mt7986a-bananapi-bpi-r3-emmc mt7986a-bananapi-bpi-r3-nand mt7986a-bananapi-bpi-r3-sd mt7986a-bananapi-bpi-r3-kmod
   DEVICE_DTS_DIR := $(DTS_DIR)/
   DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-mt7986-firmware kmod-sfp kmod-usb3 f2fsck mkf2fs mt7986-wo-firmware
   DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted fdisk kmod-nvme
@@ -166,7 +167,6 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_PACKAGES += luci-app-samba4
   DEVICE_PACKAGES += luci-app-statistics collectd-mod-wireless collectd-mod-sensors collectd-mod-thermal prometheus-node-exporter-lua
   DEVICE_PACKAGES += luci-app-uhttpd luci-app-acl luci-proto-bonding luci-app-opkg luci-theme-material
-  DEVICE_PACKAGES += rtl-sdr
   IMAGES := sysupgrade.itb
   KERNEL_LOADADDR := 0x44000000
   KERNEL_INITRAMFS_SUFFIX := -recovery.itb
