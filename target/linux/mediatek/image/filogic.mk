@@ -145,6 +145,7 @@ TARGET_DEVICES += bananapi_bpi-r3
 #  DEVICE_PACKAGES += node node-npm
 #  DEVICE_PACKAGES += luci-app-samba4
 #  DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full i2c-tools
+#  DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth 
 # Kernel Mod Full
 define Device/bananapi_bpi-r3-kmod
   DEVICE_VENDOR := Banana Pi
@@ -154,8 +155,7 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_DTS_OVERLAY:= mt7986a-bananapi-bpi-r3-emmc mt7986a-bananapi-bpi-r3-nand mt7986a-bananapi-bpi-r3-nor mt7986a-bananapi-bpi-r3-sd mt7986a-bananapi-bpi-r3-kmod
   DEVICE_DTS_DIR := $(DTS_DIR)/
   DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-mt7986-firmware kmod-sfp kmod-usb3 f2fsck mkf2fs mt7986-wo-firmware
-  DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth kmod-nvme
-  DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted fdisk
+  DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted fdisk kmod-nvme
   DEVICE_PACKAGES += kmod-crypto-user cryptsetup
   DEVICE_PACKAGES += luci-ssl dnscrypt-proxy2
   DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full i2c-tools
