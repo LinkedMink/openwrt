@@ -13,7 +13,7 @@ DOWNLOAD=false
 #endregion
 #region Parse Args
 
-VALID_ARGS=$(getopt -o l:o:t:c:d: --long log:,output:,threads:,clean:,download: -- "$@")
+VALID_ARGS=$(getopt -o l:o:t:c:d --long log:,output:,threads:,clean:,download -- "$@")
 if [[ $? -ne 0 ]]; then
   exit 1
 fi
