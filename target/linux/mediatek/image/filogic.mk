@@ -143,10 +143,8 @@ TARGET_DEVICES += bananapi_bpi-r3
 
 #  DEVICE_PACKAGES += kmod-usb-net-rndis kmod-usb-acm usb-modeswitch luci-proto-modemmanager kmod-usb-net-cdc-mbim
 #  DEVICE_PACKAGES += node node-npm
-#  DEVICE_PACKAGES += luci-app-samba4
-#  DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full i2c-tools
 #  DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth 
-# DEVICE_PACKAGES += rtl-sdr
+#  DEVICE_PACKAGES += rtl-sdr
 # Kernel Mod Full
 define Device/bananapi_bpi-r3-kmod
   DEVICE_VENDOR := Banana Pi
@@ -167,6 +165,7 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_PACKAGES += luci-app-samba4
   DEVICE_PACKAGES += luci-app-statistics collectd-mod-wireless collectd-mod-sensors collectd-mod-thermal prometheus-node-exporter-lua
   DEVICE_PACKAGES += luci-app-uhttpd luci-app-acl luci-proto-bonding luci-app-opkg luci-theme-material
+  DEVICE_PACKAGES += node node-npm
   IMAGES := sysupgrade.itb
   KERNEL_LOADADDR := 0x44000000
   KERNEL_INITRAMFS_SUFFIX := -recovery.itb
