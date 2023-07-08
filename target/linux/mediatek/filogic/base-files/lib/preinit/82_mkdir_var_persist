@@ -1,0 +1,18 @@
+# Run After: package/base-files/files/lib/preinit/80_mount_root
+
+. /lib/functions/system.sh
+
+preinit_mkdir_var_persist() {
+	case $(board_name) in
+	bananapi,bpi-r3)
+		mkdir -p /var/cache/dnscrypt-proxy/
+		mkdir -p /var/lib/
+		mkdir -p /var/log/
+		mkdir -p /home/harlan/
+		;;
+	*)
+		;;
+	esac
+}
+
+boot_hook_add preinit_main preinit_mkdir_var_persist
