@@ -176,9 +176,10 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_DTS_CONFIG := config-mt7986a-bananapi-bpi-r3
   DEVICE_DTS_OVERLAY:= mt7986a-bananapi-bpi-r3-emmc mt7986a-bananapi-bpi-r3-nand mt7986a-bananapi-bpi-r3-sd mt7986a-bananapi-bpi-r3-kmod
   DEVICE_DTS_DIR := $(DTS_DIR)/
-  DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-mt7986-firmware kmod-sfp kmod-usb3 f2fsck mkf2fs mt7986-wo-firmware
+  DEVICE_DTS_LOADADDR := 0x43f00000
+  DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-mt7986-firmware kmod-sfp kmod-usb3 e2fsprogs f2fsck mkf2fs mt7986-wo-firmware
   DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted fdisk
-  DEVICE_PACKAGES += kmod-nvme e2fsprogs btrfs-progs kmod-fs-btrfs lsblk
+  DEVICE_PACKAGES += kmod-nvme btrfs-progs kmod-fs-btrfs lsblk
   DEVICE_PACKAGES += kmod-crypto-user kmod-crypto-xts cryptsetup
   DEVICE_PACKAGES += luci-ssl dnscrypt-proxy2
   DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full i2c-tools
