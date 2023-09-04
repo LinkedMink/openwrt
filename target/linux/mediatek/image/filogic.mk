@@ -175,6 +175,7 @@ TARGET_DEVICES += bananapi_bpi-r3
 #  DEVICE_PACKAGES += kmod-usb-net-rndis kmod-usb-acm usb-modeswitch luci-proto-modemmanager kmod-usb-net-cdc-mbim
 #  DEVICE_PACKAGES += node node-npm
 #  DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth 
+#  DEVICE_PACKAGES += luci-ssl dnscrypt-proxy2
 #  DEVICE_PACKAGES += rtl-sdr
 # Kernel Mod Full
 define Device/bananapi_bpi-r3-kmod
@@ -189,11 +190,12 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted fdisk
   DEVICE_PACKAGES += kmod-nvme btrfs-progs kmod-fs-btrfs lsblk
   DEVICE_PACKAGES += kmod-crypto-user kmod-crypto-xts cryptsetup
-  DEVICE_PACKAGES += luci-ssl dnscrypt-proxy2
+  DEVICE_PACKAGES += luci-ssl
   DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full i2c-tools
   DEVICE_PACKAGES += -wpad-basic-mbedtls wpad-mbedtls
   DEVICE_PACKAGES += luci-app-dcwapdl
   DEVICE_PACKAGES += keepalived conntrackd
+  DEVICE_PACKAGES += openvpn-mbedtls luci-app-openvpn
   DEVICE_PACKAGES += wireguard-tools kmod-wireguard luci-proto-wireguard
   DEVICE_PACKAGES += luci-app-samba4
   DEVICE_PACKAGES += luci-app-statistics collectd-mod-wireless collectd-mod-sensors prometheus-node-exporter-lua libubus-lua
@@ -212,7 +214,7 @@ define Device/bananapi_bpi-r3-kmod
   ARTIFACT/nor-bl31-uboot.fip	:= mt7986-bl31-uboot bananapi_bpi-r3-kmod-nor
   ARTIFACT/snand-preloader.bin	:= mt7986-bl2 spim-nand-ddr4
   ARTIFACT/snand-bl31-uboot.fip	:= mt7986-bl31-uboot bananapi_bpi-r3-kmod-snand
-  ARTIFACT/sdcard.img.gz	:= mt7986-gpt sdmmc |\
+  ARTIFACT/sdcard.img.gz	:= mt798x-gpt sdmmc |\
 				   pad-to 17k | mt7986-bl2 sdmmc-ddr4 |\
 				   pad-to 6656k | mt7986-bl31-uboot bananapi_bpi-r3-kmod-sdmmc |\
 				$(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),\
@@ -224,7 +226,7 @@ define Device/bananapi_bpi-r3-kmod
 				   pad-to 50M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-nor |\
 				   pad-to 51M | mt7986-bl2 emmc-ddr4 |\
 				   pad-to 52M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-emmc |\
-				   pad-to 56M | mt7986-gpt emmc |\
+				   pad-to 56M | mt798x-gpt emmc |\
 				$(if $(CONFIG_TARGET_ROOTFS_SQUASHFS),\
 				   pad-to 64M | append-image squashfs-sysupgrade.itb | check-size |\
 				) \
