@@ -7,7 +7,7 @@
 
 / {
 	compatible = "mercusys,mr70x-v1", "mediatek,mt7621-soc";
-	model = "Mercusys MR70X v1";
+	model = "MERCUSYS MR70X v1";
 
 	aliases {
 		led-boot = &led_power_green;
@@ -75,6 +75,18 @@
 				label = "config";
 				reg = <0xfa0000 0x010000>;
 				read-only;
+
+				nvmem-layout {
+					compatible = "fixed-layout";
+					#address-cells = <1>;
+					#size-cells = <1>;
+
+					macaddr_config_8: macaddr@8 {
+						compatible = "mac-base";
+						reg = <0x8 0x6>;
+						#nvmem-cell-cells = <1>;
+					};
+				};
 			};
 
 			partition@fb0000 {
@@ -87,6 +99,16 @@
 				label = "radio";
 				reg = <0xff0000 0x010000>;
 				read-only;
+
+				nvmem-layout {
+					compatible = "fixed-layout";
+					#address-cells = <1>;
+					#size-cells = <1>;
+
+					eeprom_radio_0: eeprom@0 {
+						reg = <0x0 0xe00>;
+					};
+				};
 			};
 		};
 	};
@@ -100,15 +122,14 @@
 	wifi@0,0 {
 		compatible = "mediatek,mt76";
 		reg = <0x0000 0 0 0 0>;
-		mediatek,mtd-eeprom = <&radio 0x0>;
-		nvmem-cells = <&macaddr_config_8>;
-		nvmem-cell-names = "mac-address";
+		nvmem-cells = <&eeprom_radio_0>, <&macaddr_config_8 0>;
+		nvmem-cell-names = "eeprom", "mac-address";
 		mediatek,disable-radar-background;
 	};
 };
 
 &gmac0 {
-	nvmem-cells = <&macaddr_config_8>;
+	nvmem-cells = <&macaddr_config_8 0>;
 	nvmem-cell-names = "mac-address";
 };
 
@@ -117,9 +138,8 @@
 	label = "wan";
 	phy-handle = <&ethphy0>;
 
-	nvmem-cells = <&macaddr_config_8>;
+	nvmem-cells = <&macaddr_config_8 1>;
 	nvmem-cell-names = "mac-address";
-	mac-address-increment = <1>;
 };
 
 &mdio {
@@ -151,15 +171,5 @@
 	gpio {
 		groups = "i2c", "uart3";
 		function = "gpio";
-	};
-};
-
-&config {
-	compatible = "nvmem-cells";
-	#address-cells = <1>;
-	#size-cells = <1>;
-
-	macaddr_config_8: macaddr@8 {
-		reg = <0x8 0x6>;
 	};
 };

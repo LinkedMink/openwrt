@@ -12,8 +12,8 @@ PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_VERSION:=7c32cb7dd88cf100b0b412163896e30aa2ee671a
-PKG_MIRROR_HASH:=92afa3672e4af0c3ba9d360e9aaac60c094a0aad9334ef78a1fd2ee49f5e1b64
+PKG_SOURCE_VERSION:=b4e23c75aea756b4bddc4abcf27a1c6dca8b6bd3
+PKG_MIRROR_HASH:=4d5b3de6ec7b47427700f74fdb529e32083b54a512f6ca86ec824a61092ecdd4
 PKG_SOURCE_URL:=https://sourceware.org/git/glibc.git
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.xz
 PKG_CPE_ID:=cpe:/a:gnu:glibc
@@ -64,6 +64,7 @@ GLIBC_CONFIGURE:= \
 		--$(if $(CONFIG_SOFT_FLOAT),without,with)-fp \
 		  $(if $(CONFIG_PKG_CC_STACKPROTECTOR_REGULAR),--enable-stack-protector=yes) \
 		  $(if $(CONFIG_PKG_CC_STACKPROTECTOR_STRONG),--enable-stack-protector=strong) \
+		  $(if $(CONFIG_PKG_CC_STACKPROTECTOR_ALL),--enable-stack-protector=all) \
 		  $(if $(CONFIG_PKG_RELRO_FULL),--enable-bind-now) \
 		--enable-kernel=5.15.0
 

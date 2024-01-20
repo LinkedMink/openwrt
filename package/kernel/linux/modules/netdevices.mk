@@ -224,6 +224,22 @@ endef
 $(eval $(call KernelPackage,phylib-broadcom))
 
 
+define KernelPackage/phy-amd
+   SUBMENU:=$(NETWORK_DEVICES_MENU)
+   TITLE:=AMD PHY driver
+   KCONFIG:=CONFIG_AMD_PHY
+   DEPENDS:=+kmod-libphy
+   FILES:=$(LINUX_DIR)/drivers/net/phy/amd.ko
+   AUTOLOAD:=$(call AutoProbe,amd,1)
+endef
+
+define KernelPackage/phy-amd/description
+   Currently supports the AMD and Altima PHYs.
+endef
+
+$(eval $(call KernelPackage,phy-amd))
+
+
 define KernelPackage/phy-ax88796b
    SUBMENU:=$(NETWORK_DEVICES_MENU)
    TITLE:=Asix PHY driver
@@ -362,9 +378,11 @@ $(eval $(call KernelPackage,phy-smsc))
 define KernelPackage/phy-aquantia
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Aquantia Ethernet PHYs
-  DEPENDS:=+kmod-libphy +kmod-hwmon-core
+  DEPENDS:=+kmod-libphy +kmod-hwmon-core +kmod-lib-crc-ccitt
   KCONFIG:=CONFIG_AQUANTIA_PHY
-  FILES:=$(LINUX_DIR)/drivers/net/phy/aquantia.ko
+  FILES:= \
+  $(LINUX_DIR)/drivers/net/phy/aquantia.ko@lt6.1 \
+   $(LINUX_DIR)/drivers/net/phy/aquantia/aquantia.ko@ge6.1
   AUTOLOAD:=$(call AutoLoad,18,aquantia,1)
 endef
 
@@ -1327,7 +1345,7 @@ $(eval $(call KernelPackage,mlx4-core))
 define KernelPackage/mlx5-core
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Mellanox ConnectX(R) mlx5 core Network Driver
-  DEPENDS:=@PCI_SUPPORT +kmod-ptp
+  DEPENDS:=@PCI_SUPPORT +kmod-ptp +kmod-mlxfw
   FILES:=$(LINUX_DIR)/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko
   KCONFIG:= CONFIG_MLX5_CORE \
 	CONFIG_MLX5_CORE_EN=y \
@@ -1354,6 +1372,119 @@ define KernelPackage/mlx5-core/description
 endef
 
 $(eval $(call KernelPackage,mlx5-core))
+
+
+define KernelPackage/mlxfw
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Mellanox Technologies firmware flash module
+  FILES:=$(LINUX_DIR)/drivers/net/ethernet/mellanox/mlxfw/mlxfw.ko
+  KCONFIG:=CONFIG_MLXFW
+  AUTOLOAD:=$(call AutoProbe,mlxfw)
+endef
+
+define KernelPackage/mlxfw/description
+  This driver supports Mellanox Technologies Firmware
+  flashing common logic.
+endef
+
+$(eval $(call KernelPackage,mlxfw))
+
+
+define KernelPackage/mlxsw-core
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Mellanox Technologies Switch ASICs support
+  DEPENDS:=+kmod-mlxfw +kmod-hwmon-core
+  FILES:=$(LINUX_DIR)/drivers/net/ethernet/mellanox/mlxsw/mlxsw_core.ko
+  KCONFIG:= \
+  CONFIG_MLXSW_CORE \
+  CONFIG_MLXSW_CORE_HWMON=y \
+  CONFIG_MLXSW_CORE_THERMAL=y
+  AUTOLOAD:=$(call AutoProbe,mlxsw_core)
+endef
+
+define KernelPackage/mlxsw-core/description
+  This driver supports Mellanox Technologies Switch ASICs family.
+endef
+
+$(eval $(call KernelPackage,mlxsw-core))
+
+
+define KernelPackage/mlxsw-i2c
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=I2C bus implementation for Mellanox Technologies Switch ASICs
+  DEPENDS:=+kmod-mlxsw-core +kmod-i2c-core
+  FILES:=$(LINUX_DIR)/drivers/net/ethernet/mellanox/mlxsw/mlxsw_i2c.ko
+  KCONFIG:=CONFIG_MLXSW_I2C
+  AUTOLOAD:=$(call AutoProbe,mlxsw_i2c)
+endef
+
+define KernelPackage/mlxsw-i2c/description
+  This is I2C bus implementation for Mellanox Technologies Switch ASICs.
+endef
+
+$(eval $(call KernelPackage,mlxsw-i2c))
+
+
+define KernelPackage/mlxsw-minimal
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Mellanox Technologies minimal I2C support
+  DEPENDS:=+kmod-mlxsw-core +kmod-mlxsw-i2c
+  FILES:=$(LINUX_DIR)/drivers/net/ethernet/mellanox/mlxsw/mlxsw_minimal.ko
+  KCONFIG:=CONFIG_MLXSW_MINIMAL
+  AUTOLOAD:=$(call AutoProbe,mlxsw_minimal)
+endef
+
+define KernelPackage/mlxsw-minimal/description
+  This driver supports I2C access for Mellanox Technologies Switch
+  ASICs.
+endef
+
+$(eval $(call KernelPackage,mlxsw-minimal))
+
+
+define KernelPackage/mlxsw-pci
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=PCI bus implementation for Mellanox Technologies Switch ASICs
+  DEPENDS:=@PCI_SUPPORT +kmod-mlxsw-core
+  FILES:=$(LINUX_DIR)/drivers/net/ethernet/mellanox/mlxsw/mlxsw_pci.ko
+  KCONFIG:=CONFIG_MLXSW_PCI
+  AUTOLOAD:=$(call AutoProbe,mlxsw_pci)
+endef
+
+define KernelPackage/mlxsw-pci/description
+  This is PCI bus implementation for Mellanox Technologies Switch ASICs.
+endef
+
+$(eval $(call KernelPackage,mlxsw-pci))
+
+
+define KernelPackage/mlxsw-spectrum
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Mellanox Technologies Spectrum family support
+  DEPENDS:= \
+  +kmod-mlxsw-core +kmod-mlxsw-pci +kmod-lib-objagg +kmod-lib-parman \
+  +kmod-ip6-tunnel +kmod-ptp +kmod-sched-act-sample +kmod-vxlan
+  FILES:=$(LINUX_DIR)/drivers/net/ethernet/mellanox/mlxsw/mlxsw_spectrum.ko
+  KCONFIG:= \
+  CONFIG_MLXSW_SPECTRUM \
+  CONFIG_NET_SWITCHDEV=y \
+  CONFIG_MLXSW_SPECTRUM_DCB=y \
+  CONFIG_DCB=y \
+  CONFIG_AMD_XGBE_DCB=n \
+  CONFIG_IXGBE_DCB=n \
+  CONFIG_I40E_DCB=n \
+  CONFIG_QLCNIC_DCB=n \
+  CONFIG_FSL_DPAA2_ETH_DCB=n \
+  CONFIG_FSL_DPAA2_SWITCH=n
+  AUTOLOAD:=$(call AutoProbe,mlxsw_spectrum)
+endef
+
+define KernelPackage/mlxsw-spectrum/description
+  This driver supports Mellanox Technologies
+  Spectrum/Spectrum-2/Spectrum-3/Spectrum-4 Ethernet Switch ASICs.
+endef
+
+$(eval $(call KernelPackage,mlxsw-spectrum))
 
 
 define KernelPackage/net-selftests
@@ -1410,6 +1541,37 @@ define KernelPackage/sfp/description
 endef
 
 $(eval $(call KernelPackage,sfp))
+
+
+define KernelPackage/pcs-xpcs
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Synopsis DesignWare PCS driver
+  DEPENDS:=@(TARGET_x86_64||TARGET_armsr_armv8) +kmod-phylink
+  KCONFIG:=CONFIG_PCS_XPCS
+  FILES:=$(LINUX_DIR)/drivers/net/pcs/pcs_xpcs.ko
+  AUTOLOAD:=$(call AutoLoad,20,pcs_xpcs)
+endef
+
+$(eval $(call KernelPackage,pcs-xpcs))
+
+
+define KernelPackage/stmmac-core
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Synopsis Ethernet Controller core (NXP,STMMicro,others)
+  DEPENDS:=@TARGET_x86_64||TARGET_armsr_armv8 +kmod-pcs-xpcs +kmod-ptp
+  KCONFIG:=CONFIG_STMMAC_ETH \
+    CONFIG_STMMAC_SELFTESTS=n \
+    CONFIG_STMMAC_PLATFORM \
+    CONFIG_CONFIG_DWMAC_DWC_QOS_ETH=n \
+    CONFIG_DWMAC_GENERIC
+  FILES=$(LINUX_DIR)/drivers/net/ethernet/stmicro/stmmac/stmmac.ko \
+    $(LINUX_DIR)/drivers/net/ethernet/stmicro/stmmac/stmmac-platform.ko \
+    $(LINUX_DIR)/drivers/net/ethernet/stmicro/stmmac/dwmac-generic.ko
+  AUTOLOAD=$(call AutoLoad,40,stmmac stmmac-platform dwmac-generic)
+endef
+
+$(eval $(call KernelPackage,stmmac-core))
+
 
 define KernelPackage/igc
   SUBMENU:=$(NETWORK_DEVICES_MENU)

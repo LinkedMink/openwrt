@@ -147,7 +147,8 @@
 	wifi@0,0 {
 		compatible = "mediatek,mt76";
 		reg = <0x0 0 0 0 0>;
-		mediatek,mtd-eeprom = <&factory 0x0>;
+		nvmem-cells = <&eeprom_factory_0>;
+		nvmem-cell-names = "eeprom";
 		ieee80211-freq-limit = <2400000 2500000>;
 	};
 };
@@ -156,13 +157,14 @@
 	wifi@0,0 {
 		compatible = "mediatek,mt76";
 		reg = <0x0 0 0 0 0>;
-		mediatek,mtd-eeprom = <&factory 0x8000>;
+		nvmem-cells = <&eeprom_factory_8000>;
+		nvmem-cell-names = "eeprom";
 		ieee80211-freq-limit = <5000000 6000000>;
 	};
 };
 
 &gmac0 {
-	nvmem-cells = <&macaddr_factory_4>;
+	nvmem-cells = <&macaddr_factory_4 0>;
 	nvmem-cell-names = "mac-address";
 };
 
@@ -171,9 +173,8 @@
 	label = "wan";
 	phy-handle = <&ethphy4>;
 
-	nvmem-cells = <&macaddr_factory_4>;
+	nvmem-cells = <&macaddr_factory_4 2>;
 	nvmem-cell-names = "mac-address";
-	mac-address-increment = <2>;
 };
 
 &mdio {
@@ -216,6 +217,7 @@
 		reg = <0x20>;
 
 		gpio-controller;
+		interrupt-controller;
 	};
 };
 
@@ -342,6 +344,26 @@
 			reg = <0x4600000 0x200000>;
 			sercomm,scpart-id = <16>;
 			read-only;
+
+			nvmem-layout {
+				compatible = "fixed-layout";
+				#address-cells = <1>;
+				#size-cells = <1>;
+
+				eeprom_factory_0: eeprom@0 {
+					reg = <0x0 0x4da8>;
+				};
+
+				eeprom_factory_8000: eeprom@8000 {
+					reg = <0x8000 0x4da8>;
+				};
+
+				macaddr_factory_4: macaddr@4 {
+					compatible = "mac-base";
+					reg = <0x4 0x6>;
+					#nvmem-cell-cells = <1>;
+				};
+			};
 		};
 
 		partition@4800000 {
@@ -427,15 +449,5 @@
 			sercomm,scpart-id = <28>;
 			read-only;
 		};
-	};
-};
-
-&factory {
-	compatible = "nvmem-cells";
-	#address-cells = <1>;
-	#size-cells = <1>;
-
-	macaddr_factory_4: macaddr@4 {
-		reg = <0x4 0x6>;
 	};
 };
