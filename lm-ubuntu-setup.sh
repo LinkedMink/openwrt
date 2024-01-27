@@ -16,7 +16,7 @@ sudo apt update
 sudo apt install \
     build-essential clang flex bison g++ gawk gcc-multilib g++-multilib \
     gettext git libncurses-dev libssl-dev python3-distutils rsync unzip zlib1g-dev \
-    file wget
+    file wget swig
 
 logInfo "Setup build configuration for forked repo"
 
