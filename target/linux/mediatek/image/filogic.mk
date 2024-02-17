@@ -286,7 +286,6 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_DTS_CONFIG := config-mt7986a-bananapi-bpi-r3
   DEVICE_DTS_OVERLAY:= mt7986a-bananapi-bpi-r3-emmc mt7986a-bananapi-bpi-r3-nand \
 		       mt7986a-bananapi-bpi-r3-nor mt7986a-bananapi-bpi-r3-sd \
-		       mt7986a-bananapi-bpi-r3-respeaker-2mics \
 		       mt7986a-bananapi-bpi-r3-kmod
   DEVICE_DTS_DIR := $(DTS_DIR)/
   DEVICE_DTS_LOADADDR := 0x43f00000
