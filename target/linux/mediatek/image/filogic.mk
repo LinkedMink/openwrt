@@ -273,11 +273,12 @@ endif
 endef
 TARGET_DEVICES += bananapi_bpi-r3
 
-#  DEVICE_PACKAGES += kmod-usb-net-rndis kmod-usb-acm usb-modeswitch luci-proto-modemmanager kmod-usb-net-cdc-mbim
 #  DEVICE_PACKAGES += node node-npm
 #  DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth 
-#  DEVICE_PACKAGES += luci-ssl dnscrypt-proxy2
 #  DEVICE_PACKAGES += rtl-sdr
+# DEVICE_PACKAGES += luci-ssl-nginx
+# DEVICE_PACKAGES += dnscrypt-proxy2
+#  DEVICE_PACKAGES += usb-modeswitch luci-proto-modemmanager kmod-usb-serial kmod-usb-net kmod-usb-serial-wwan kmod-usb-serial-option kmod-usb-net-qmi-wwan kmod-usb-net-cdc-mbim kmod-usb-net-huawei-cdc-ncm
 # Kernel Mod Full
 define Device/bananapi_bpi-r3-kmod
   DEVICE_VENDOR := Banana Pi
@@ -294,16 +295,17 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted fdisk
   DEVICE_PACKAGES += kmod-nvme btrfs-progs kmod-fs-btrfs lsblk
   DEVICE_PACKAGES += kmod-crypto-user kmod-crypto-xts cryptsetup
-  DEVICE_PACKAGES += luci-ssl
   DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full i2c-tools
   DEVICE_PACKAGES += -wpad-basic-mbedtls wpad-mbedtls
-  DEVICE_PACKAGES += luci-app-dcwapdl
+  DEVICE_PACKAGES += luci-ssl-nginx
   DEVICE_PACKAGES += keepalived conntrackd
   DEVICE_PACKAGES += openvpn-mbedtls luci-app-openvpn
   DEVICE_PACKAGES += wireguard-tools kmod-wireguard luci-proto-wireguard
   DEVICE_PACKAGES += luci-app-samba4
   DEVICE_PACKAGES += luci-app-statistics collectd-mod-wireless collectd-mod-sensors prometheus-node-exporter-lua libubus-lua
-  DEVICE_PACKAGES += luci-app-uhttpd luci-app-acl luci-proto-bonding luci-app-opkg luci-theme-material
+  DEVICE_PACKAGES += luci-app-dcwapdl luci-app-uhttpd luci-app-acl luci-proto-bonding luci-app-opkg luci-theme-material
+  DEVICE_PACKAGES += dnscrypt-proxy2
+  DEVICE_PACKAGES += usb-modeswitch luci-proto-modemmanager kmod-usb-serial kmod-usb-net kmod-usb-serial-wwan kmod-usb-serial-option kmod-usb-net-qmi-wwan kmod-usb-net-cdc-mbim kmod-usb-net-huawei-cdc-ncm
   IMAGES := sysupgrade.itb
   KERNEL_LOADADDR := 0x44000000
   KERNEL_INITRAMFS_SUFFIX := -recovery.itb
