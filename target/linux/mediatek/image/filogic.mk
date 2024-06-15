@@ -295,6 +295,7 @@ TARGET_DEVICES += bananapi_bpi-r3
 #  DEVICE_PACKAGES += rtl-sdr
 # DEVICE_PACKAGES += luci-ssl-nginx
 # DEVICE_PACKAGES += dnscrypt-proxy2
+# DEVICE_PACKAGES += openvpn-mbedtls luci-app-openvpn
 #  DEVICE_PACKAGES += usb-modeswitch luci-proto-modemmanager kmod-usb-serial kmod-usb-net kmod-usb-serial-wwan kmod-usb-serial-option kmod-usb-net-qmi-wwan kmod-usb-net-cdc-mbim kmod-usb-net-huawei-cdc-ncm
 # Kernel Mod Full
 define Device/bananapi_bpi-r3-kmod
@@ -314,15 +315,14 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_PACKAGES += kmod-crypto-user kmod-crypto-xts cryptsetup
   DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full i2c-tools
   DEVICE_PACKAGES += -wpad-basic-mbedtls wpad-mbedtls
-  DEVICE_PACKAGES += luci-ssl-nginx
+  DEVICE_PACKAGES += luci-nginx luci-ssl-nginx
   DEVICE_PACKAGES += keepalived conntrackd
-  DEVICE_PACKAGES += openvpn-mbedtls luci-app-openvpn
   DEVICE_PACKAGES += wireguard-tools kmod-wireguard luci-proto-wireguard
   DEVICE_PACKAGES += luci-app-samba4
   DEVICE_PACKAGES += luci-app-statistics collectd-mod-wireless collectd-mod-sensors prometheus-node-exporter-lua libubus-lua
   DEVICE_PACKAGES += luci-app-dcwapdl luci-app-acl luci-proto-bonding luci-app-opkg luci-theme-material
   DEVICE_PACKAGES += dnscrypt-proxy2
-  DEVICE_PACKAGES += usb-modeswitch kmod-usb-serial kmod-usb-net kmod-usb-serial-wwan kmod-usb-serial-option kmod-usb-net-qmi-wwan kmod-usb-net-cdc-mbim kmod-usb-net-huawei-cdc-ncm
+  DEVICE_PACKAGES += usb-modeswitch luci-proto-modemmanager kmod-usb-serial kmod-usb-net kmod-usb-serial-wwan kmod-usb-serial-option kmod-usb-net-qmi-wwan kmod-usb-net-cdc-mbim kmod-usb-net-huawei-cdc-ncm
   IMAGES := sysupgrade.itb
   KERNEL_LOADADDR := 0x44000000
   KERNEL_INITRAMFS_SUFFIX := -recovery.itb
