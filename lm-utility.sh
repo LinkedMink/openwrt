@@ -40,6 +40,12 @@ logInfo() {
   fi
 }
 
+logSuccess() {
+  if [[ $LOG_LEVEL -ge ${LOG_LEVELS[Info]} ]]; then
+    echo -e "${C_GREEN}INFO:${C_RESET} $1"
+  fi
+}
+
 logDebug() {
   if [[ $LOG_LEVEL -ge ${LOG_LEVELS[Debug]} ]]; then
     echo -e "${C_BLUE}DEBUG:${C_RESET} $1"
@@ -50,18 +56,18 @@ installDependencyIfNotFound() {
   commandName=$1
   packageName=${2:-${commandName}}
 
-  if command -v $commandName &>/dev/null; then
+  if command -v "$commandName" &>/dev/null; then
     logInfo "Command found: $commandName"
     return 0
   fi
 
   logWarn "Missing command, install apt dependency: cmd=$commandName, package=$packageName"
-  sudo apt install $packageName
+  sudo apt install "$packageName"
 }
 
 rmIfExist() {
-  if [ -e $1 ]; then
-    rm $1
+  if [ -e "$1" ]; then
+    rm "$1"
   fi
 }
 

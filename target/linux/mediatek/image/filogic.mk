@@ -308,7 +308,7 @@ define Device/bananapi_bpi-r3-kmod
 		       mt7986a-bananapi-bpi-r3-kmod
   DEVICE_DTS_DIR := $(DTS_DIR)/
   DEVICE_DTS_LOADADDR := 0x43f00000
-  DEVICE_PACKAGES := fitblk kmod-hwmon-pwmfan kmod-i2c-gpio kmod-mt7986-firmware kmod-sfp kmod-usb3 \
+  DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-mt7915e kmod-mt7986-firmware kmod-sfp kmod-usb3 \
 		     e2fsprogs f2fsck mkf2fs mt7986-wo-firmware
   DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted fdisk
   DEVICE_PACKAGES += kmod-nvme btrfs-progs kmod-fs-btrfs lsblk

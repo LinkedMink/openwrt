@@ -59,7 +59,7 @@ if [ "$CLEAN" = kernel ]; then
   make target/linux/clean
   make package/boot/uboot-mediatek/clean
   for makeTarget in package/kernel/*; do
-    make package/kernel/$makeTarget/clean
+    make "package/kernel/$makeTarget/clean"
   done
 elif [ "$CLEAN" = package ]; then
   logInfo "Pre-build - Clean all architecture packages"
@@ -78,7 +78,7 @@ if [ "$DOWNLOAD" = true ]; then
   make download
 fi
 
-rmIfExist $LOG_FILE_BUILD
+rmIfExist "$LOG_FILE_BUILD"
 
 #endregion
 #region Build
@@ -88,8 +88,8 @@ logInfo "Running build with params: --log ${C_YELLOW}${LOG_LEVEL_BUILD}${C_RESET
 
 # export IGNORE_ERRORS=1
 time unbuffer \
-  make -j $THREADS V=$LOG_LEVEL_BUILD |
-  tee $LOG_FILE_BUILD
+  make -j "$THREADS" V="$LOG_LEVEL_BUILD" |
+  tee "$LOG_FILE_BUILD"
 
 logInfo "---------- Build -END- ----------"
 
