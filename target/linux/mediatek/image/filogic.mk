@@ -341,17 +341,17 @@ define Device/bananapi_bpi-r3-kmod
 				   pad-to 17k | mt7986-bl2 sdmmc-ddr4 |\
 				   pad-to 6656k | mt7986-bl31-uboot bananapi_bpi-r3-kmod-sdmmc |\
 				$(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),\
-				   pad-to 12M | append-image-stage initramfs-recovery.itb | check-size 44m |\
+				   pad-to 12M | append-image-stage initramfs-recovery.itb | check-size 48m |\
 				) \
-				   pad-to 44M | mt7986-bl2 spim-nand-ubi-ddr4 |\
-				   pad-to 45M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-snand |\
-				   pad-to 49M | mt7986-bl2 nor-ddr4 |\
-				   pad-to 50M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-nor |\
-				   pad-to 51M | mt7986-bl2 emmc-ddr4 |\
-				   pad-to 52M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-emmc |\
-				   pad-to 56M | mt798x-gpt emmc |\
+				   pad-to 48M | mt7986-bl2 spim-nand-ubi-ddr4 |\
+				   pad-to 49M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-snand |\
+				   pad-to 53M | mt7986-bl2 nor-ddr4 |\
+				   pad-to 54M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-nor |\
+				   pad-to 55M | mt7986-bl2 emmc-ddr4 |\
+				   pad-to 56M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-emmc |\
+				   pad-to 60M | mt798x-gpt emmc |\
 				$(if $(CONFIG_TARGET_ROOTFS_SQUASHFS),\
-				   pad-to 64M | append-image squashfs-sysupgrade.itb | check-size |\
+				   pad-to 68M | append-image squashfs-sysupgrade.itb | check-size |\
 				) \
 				  gzip
 ifeq ($(DUMP),)
