@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+set -e
+
 #region Constants
 
 C_RED='\033[1;31m'
