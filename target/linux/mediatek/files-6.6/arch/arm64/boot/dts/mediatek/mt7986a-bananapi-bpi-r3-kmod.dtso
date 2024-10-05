@@ -1,0 +1,19 @@
+/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
+
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "bananapi,bpi-r3-kmod", "bananapi,bpi-r3", "mediatek,mt7986a";
+    
+    fragment@0 {
+        target = <&fan>;
+        /**
+         * Cell 0 corresponds to not tripped, 1 to active-low, etc.
+         * Value 0 = 100% duty cycle, so this is fan always on, not sure why this is inverted from `dtsi` file
+         */
+        __overlay__ {
+            cooling-levels = <0 0 0 0>;
+        };
+    };
+};

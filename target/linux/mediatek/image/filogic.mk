@@ -270,6 +270,84 @@ endif
 endef
 TARGET_DEVICES += bananapi_bpi-r3
 
+#  DEVICE_PACKAGES += node node-npm
+#  DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth 
+#  DEVICE_PACKAGES += rtl-sdr
+# DEVICE_PACKAGES += luci-ssl-nginx
+# DEVICE_PACKAGES += dnscrypt-proxy2
+# DEVICE_PACKAGES += openvpn-mbedtls luci-app-openvpn
+#  DEVICE_PACKAGES += usb-modeswitch luci-proto-modemmanager kmod-usb-serial kmod-usb-net kmod-usb-serial-wwan kmod-usb-serial-option kmod-usb-net-qmi-wwan kmod-usb-net-cdc-mbim kmod-usb-net-huawei-cdc-ncm
+# Kernel Mod Full
+define Device/bananapi_bpi-r3-kmod
+  DEVICE_VENDOR := Banana Pi
+  DEVICE_MODEL := BPi-R3 (Modified)
+  DEVICE_DTS := mt7986a-bananapi-bpi-r3
+  DEVICE_DTS_CONFIG := config-mt7986a-bananapi-bpi-r3
+  DEVICE_DTS_OVERLAY:= mt7986a-bananapi-bpi-r3-emmc mt7986a-bananapi-bpi-r3-nand \
+		       mt7986a-bananapi-bpi-r3-nor mt7986a-bananapi-bpi-r3-sd \
+		       mt7986a-bananapi-bpi-r3-kmod
+  DEVICE_DTS_DIR := $(DTS_DIR)/
+  DEVICE_DTS_LOADADDR := 0x43f00000
+  DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-i2c-gpio kmod-mt7915e kmod-mt7986-firmware kmod-sfp kmod-usb3 \
+		     e2fsprogs f2fsck mkf2fs mt7986-wo-firmware
+  DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted fdisk
+  DEVICE_PACKAGES += kmod-nvme btrfs-progs kmod-fs-btrfs lsblk
+  DEVICE_PACKAGES += kmod-crypto-user kmod-crypto-xts cryptsetup
+  DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full i2c-tools
+  DEVICE_PACKAGES += -wpad-basic-mbedtls wpad-mbedtls
+  DEVICE_PACKAGES += luci-nginx luci-ssl-nginx
+  DEVICE_PACKAGES += keepalived conntrackd
+  DEVICE_PACKAGES += wireguard-tools kmod-wireguard luci-proto-wireguard
+  DEVICE_PACKAGES += luci-app-samba4
+  DEVICE_PACKAGES += luci-app-statistics collectd-mod-wireless collectd-mod-sensors prometheus-node-exporter-lua libubus-lua
+  DEVICE_PACKAGES += luci-app-dcwapdl luci-app-acl luci-proto-bonding luci-app-opkg luci-theme-material
+  DEVICE_PACKAGES += dnscrypt-proxy2
+  DEVICE_PACKAGES += usb-modeswitch luci-proto-modemmanager kmod-usb-serial kmod-usb-net kmod-usb-serial-wwan kmod-usb-serial-option kmod-usb-net-qmi-wwan kmod-usb-net-cdc-mbim kmod-usb-net-huawei-cdc-ncm
+  IMAGES := sysupgrade.itb
+  KERNEL_LOADADDR := 0x44000000
+  KERNEL_INITRAMFS_SUFFIX := -recovery.itb
+  ARTIFACTS := \
+	       emmc-preloader.bin emmc-bl31-uboot.fip \
+	       nor-preloader.bin nor-bl31-uboot.fip \
+	       sdcard.img.gz \
+	       snand-preloader.bin snand-bl31-uboot.fip
+  ARTIFACT/emmc-preloader.bin	:= mt7986-bl2 emmc-ddr4
+  ARTIFACT/emmc-bl31-uboot.fip	:= mt7986-bl31-uboot bananapi_bpi-r3-kmod-emmc
+  ARTIFACT/nor-preloader.bin	:= mt7986-bl2 nor-ddr4
+  ARTIFACT/nor-bl31-uboot.fip	:= mt7986-bl31-uboot bananapi_bpi-r3-kmod-nor
+  ARTIFACT/snand-preloader.bin	:= mt7986-bl2 spim-nand-ubi-ddr4
+  ARTIFACT/snand-bl31-uboot.fip	:= mt7986-bl31-uboot bananapi_bpi-r3-kmod-snand
+  ARTIFACT/sdcard.img.gz	:= mt798x-gpt sdmmc |\
+				   pad-to 17k | mt7986-bl2 sdmmc-ddr4 |\
+				   pad-to 6656k | mt7986-bl31-uboot bananapi_bpi-r3-kmod-sdmmc |\
+				$(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),\
+				   pad-to 12M | append-image-stage initramfs-recovery.itb | check-size 48m |\
+				) \
+				   pad-to 48M | mt7986-bl2 spim-nand-ubi-ddr4 |\
+				   pad-to 49M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-snand |\
+				   pad-to 53M | mt7986-bl2 nor-ddr4 |\
+				   pad-to 54M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-nor |\
+				   pad-to 55M | mt7986-bl2 emmc-ddr4 |\
+				   pad-to 56M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-emmc |\
+				   pad-to 60M | mt798x-gpt emmc |\
+				$(if $(CONFIG_TARGET_ROOTFS_SQUASHFS),\
+				   pad-to 68M | append-image squashfs-sysupgrade.itb | check-size |\
+				) \
+				  gzip
+ifeq ($(DUMP),)
+  IMAGE_SIZE := $$(shell expr 64 + $$(CONFIG_TARGET_ROOTFS_PARTSIZE))m
+endif
+  KERNEL			:= kernel-bin | gzip
+  KERNEL_INITRAMFS := kernel-bin | lzma | \
+	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | pad-to 64k
+  IMAGE/sysupgrade.itb := append-kernel | fit gzip $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb external-static-with-rootfs | pad-rootfs | append-metadata
+  DEVICE_DTC_FLAGS := --pad 4096
+  DEVICE_COMPAT_VERSION := 1.2
+  DEVICE_COMPAT_MESSAGE := SPI-NAND flash layout changes require bootloader update
+  SUPPORTED_DEVICES += bananapi,bpi-r3
+endef
+TARGET_DEVICES += bananapi_bpi-r3-kmod
+
 define Device/cetron_ct3003
   DEVICE_VENDOR := Cetron
   DEVICE_MODEL := CT3003
