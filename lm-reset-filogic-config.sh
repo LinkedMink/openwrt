@@ -13,12 +13,12 @@ installDependencyIfNotFound wget
 
 logInfo "Configs prior to reset will be moved to path: ./config.$CONFIG_BACKUP_SUFFIX"
 if [ -f .config ]; then
-  rmIfExist ".config.$CONFIG_BACKUP_SUFFIX"
+  rm -f ".config.$CONFIG_BACKUP_SUFFIX"
   mv .config ".config.$CONFIG_BACKUP_SUFFIX"
 fi
 
 if [ -f .config.old ]; then
-  rmIfExist ".config.$CONFIG_BACKUP_SUFFIX.old"
+  rm -f ".config.$CONFIG_BACKUP_SUFFIX.old"
   mv .config.old ".config.$CONFIG_BACKUP_SUFFIX.old"
 fi
 
@@ -40,10 +40,10 @@ CONFIG_TARGET_PREINIT_IP="192.168.128.163"
 CONFIG_TARGET_PREINIT_NETMASK="255.255.255.0"
 CONFIG_TARGET_PREINIT_BROADCAST="192.168.128.255"
 
-CONFIG_LIBQMI_COLLECTION_FULL=y
-# CONFIG_PACKAGE_kmod-pf-ring is not set
-
 EOF
+
+# CONFIG_LIBQMI_COLLECTION_FULL=y
+# # CONFIG_PACKAGE_kmod-pf-ring is not set
 
 # CONFIG_TARGET_ROOTFS_PERSIST_VAR=y
 # CONFIG_TARGET_OPTIMIZATION="-O3 -pipe -mcpu=cortex-a53 -Wno-error"

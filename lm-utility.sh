@@ -20,7 +20,7 @@ LOG_LEVELS[Debug]=3
 #endregion
 #region Environment Variables with Defaults
 
-LOG_LEVEL="${LOG_LEVEL:-2}"
+LOG_LEVEL="${LOG_LEVEL:-${LOG_LEVELS[Info]}}"
 
 #endregion
 #region Functions
@@ -60,18 +60,12 @@ installDependencyIfNotFound() {
   packageName=${2:-${commandName}}
 
   if command -v "$commandName" &>/dev/null; then
-    logInfo "Command found: $commandName"
+    logDebug "Command found: $commandName"
     return 0
   fi
 
   logWarn "Missing command, install apt dependency: cmd=$commandName, package=$packageName"
   sudo apt install "$packageName"
-}
-
-rmIfExist() {
-  if [ -e "$1" ]; then
-    rm "$1"
-  fi
 }
 
 #endregion

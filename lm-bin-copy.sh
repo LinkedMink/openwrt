@@ -17,7 +17,7 @@ logInfo "Copying to: $OUTPUT_DIR"
 
 for binFile in "${BIN_FILES[@]}"; do
     if [ -f "$OUTPUT_DIR/$binFile" ]; then
-        rmIfExist "$OUTPUT_DIR/$binFile.$BACKUP_SUFFIX"
+        rm -f "$OUTPUT_DIR/$binFile.$BACKUP_SUFFIX"
         mv "$OUTPUT_DIR/$binFile" "$OUTPUT_DIR/$binFile.$BACKUP_SUFFIX"
     fi
 
