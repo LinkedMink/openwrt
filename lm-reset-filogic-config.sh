@@ -4,12 +4,11 @@
 source lm-utility.sh
 
 CONFIG_BACKUP_SUFFIX="prereset"
-CONFIG_DEFAULT_URL="https://downloads.openwrt.org/snapshots/targets/mediatek/filogic/config.buildinfo"
+# CONFIG_DEFAULT_URL="https://downloads.openwrt.org/snapshots/targets/mediatek/filogic/config.buildinfo"
+CONFIG_DEFAULT_URL="https://downloads.openwrt.org/releases/24.10.0/targets/mediatek/filogic/config.buildinfo"
 
 #endregion
 #region Main
-
-installDependencyIfNotFound wget
 
 logInfo "Configs prior to reset will be moved to path: ./config.$CONFIG_BACKUP_SUFFIX"
 if [ -f .config ]; then

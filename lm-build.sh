@@ -67,8 +67,6 @@ EOT
 #endregion
 #region Pre-Build Clean and Preparation
 
-installDependencyIfNotFound unbuffer expect
-
 # https://openwrt.org/docs/guide-developer/toolchain/use-buildsystem#cleaning_up
 if [ "$cleanTargets" = kernel ]; then
   logInfo "Pre-build - Clean kernel targets only"

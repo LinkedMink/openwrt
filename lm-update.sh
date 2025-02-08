@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-git pull upstream master --no-edit
+# git pull upstream master --no-edit
+git pull upstream openwrt-24.10 --no-edit
 # cd ./feeds/luci
 # git pull upstream master --no-edit
 # cd ../../
