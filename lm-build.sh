@@ -15,59 +15,67 @@ isConfigReset=false
 #endregion
 #region Parse Args
 
-VALID_ARGS=$(getopt -o l:o:t:c:dr --long log:,output:,threads:,clean:,download,reset -- "$@")
-if [[ $? -ne 0 ]]; then
+usage() {
+  echo "Usage: $0 [options]"
+  echo "  -l <1-99|s|sc> logLevelBuild"
+  echo "  -o <filename> logFileBuild"
+  echo "  -t <integer> threadCount"
+  echo "  -c <kernel|package|target|build> cleanTargets"
+  echo "  -d isPredownloaded"
+  echo "  -r isConfigReset"
   exit 1
-fi
+}
 
-eval set -- "$VALID_ARGS"
-while [ : ]; do
-  case "$1" in
-  -l | --log)
-    logLevelBuild=$2
-    shift 2
+option=
+while getopts l:o:t:c:dr option; do
+  case "$option" in
+  l)
+    logLevelBuild=$OPTARG
     ;;
-  -o | --output)
-    logFileBuild=$2
-    shift 2
+  o)
+    logFileBuild=$OPTARG
     ;;
-  -t | --threads)
-    threadCount=$2
-    shift 2
+  t)
+    threadCount=$OPTARG
+    if [[ "$threadCount" =~ ^[0-9]+$ ]]; then
+      echo "Invalid Argument: -t | --threads number"
+      usage
+    fi
     ;;
-  -c | --clean)
-    cleanTargets=$2
-    shift 2
+  c)
+    cleanTargets=$OPTARG
+    if [[ "$cleanTargets" =~ ^(kernel|package|target|build)$ ]]; then
+      echo "Invalid Argument: -c --clean kernel|package|target|build"
+      usage
+    fi
     ;;
-  -d | --download)
+  d)
     isPredownloaded=true
-    shift
     ;;
-  -r | --reset)
+  r)
     isConfigReset=true
-    shift
     ;;
-  --)
-    shift
-    break
+  *)
+    echo "Invalid Argument: $option"
+    usage
     ;;
   esac
 done
+shift $((OPTIND-1))
 
-logDebug <<EOT
+logDebug "$(cat <<EOT
 Options:
-logLevelBuild=$logLevelBuild
-logFileBuild=$logFileBuild
-threadCount=$threadCount
-cleanTargets=$cleanTargets
-isPredownloaded=$isPredownloaded
-isConfigReset=$isConfigReset
+  logLevelBuild=$logLevelBuild
+  logFileBuild=$logFileBuild
+  threadCount=$threadCount
+  cleanTargets=$cleanTargets
+  isPredownloaded=$isPredownloaded
+  isConfigReset=$isConfigReset
 EOT
+)"
 
 #endregion
 #region Pre-Build Clean and Preparation
-
-installDependencyIfNotFound unbuffer expect
 
 # https://openwrt.org/docs/guide-developer/toolchain/use-buildsystem#cleaning_up
 if [ "$cleanTargets" = kernel ]; then

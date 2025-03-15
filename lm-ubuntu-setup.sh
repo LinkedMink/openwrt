@@ -8,7 +8,11 @@ OPENWRT_GIT_REPO_URL="git://git.openwrt.org/openwrt/openwrt.git"
 #endregion
 #region Main
 
-logInfo "Install dependencies"
+logInfo "Install script utilities"
+
+sudo apt install unbuffer expect
+
+logInfo "Install OpenWRT build system dependencies"
 
 # https://openwrt.org/docs/guide-developer/toolchain/install-buildsystem#debianubuntu
 # https://openwrt.org/docs/guide-developer/toolchain/wsl

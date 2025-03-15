@@ -9,8 +9,6 @@ CONFIG_DEFAULT_URL="https://downloads.openwrt.org/snapshots/targets/mediatek/fil
 #endregion
 #region Main
 
-installDependencyIfNotFound wget
-
 logInfo "Configs prior to reset will be moved to path: ./config.$CONFIG_BACKUP_SUFFIX"
 if [ -f .config ]; then
   rm -f ".config.$CONFIG_BACKUP_SUFFIX"

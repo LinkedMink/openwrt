@@ -20,7 +20,13 @@ LOG_LEVELS[Debug]=3
 #endregion
 #region Environment Variables with Defaults
 
-LOG_LEVEL="${LOG_LEVEL:-${LOG_LEVELS[Info]}}"
+if [[ -n "${LOG_LEVEL}" ]]; then
+  if [[ ! "$LOG_LEVEL" =~ ^[0-9]+$ ]]; then
+    LOG_LEVEL=${LOG_LEVELS[$LOG_LEVEL]}
+  fi
+else
+  LOG_LEVEL=${LOG_LEVELS[Info]}
+fi
 
 #endregion
 #region Functions
