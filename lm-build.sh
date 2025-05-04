@@ -37,15 +37,15 @@ while getopts l:o:t:c:dr option; do
     ;;
   t)
     threadCount=$OPTARG
-    if [[ "$threadCount" =~ ^[0-9]+$ ]]; then
-      echo "Invalid Argument: -t | --threads number"
+    if ! [[ "$threadCount" =~ ^[0-9]+$ ]]; then
+      echo "Invalid Argument: -t number"
       usage
     fi
     ;;
   c)
     cleanTargets=$OPTARG
-    if [[ "$cleanTargets" =~ ^(kernel|package|target|build)$ ]]; then
-      echo "Invalid Argument: -c --clean kernel|package|target|build"
+    if ! [[ "$cleanTargets" =~ ^(kernel|package|target|build)$ ]]; then
+      echo "Invalid Argument: -c kernel|package|target|build"
       usage
     fi
     ;;
@@ -95,7 +95,7 @@ elif [ "$cleanTargets" = build ]; then
   logInfo "Pre-build - Clean all local tools and architecture targets"
   make dirclean
 else
-  logInfo "Pre-build - Clean not performed kernel|package|target|build"
+  logDebug "Pre-build - Clean not performed kernel|package|target|build"
 fi
 
 if [ "$isConfigReset" = true ]; then
@@ -112,7 +112,7 @@ rm -f "$logFileBuild"
 #region Build
 
 logInfo "---------- Build START ----------"
-logInfo "Running build with params: --log ${C_YELLOW}${logLevelBuild}${C_RESET} --output ${C_YELLOW}${logFileBuild}${C_RESET} --threads ${C_YELLOW}${threadCount}${C_RESET}"
+logInfo "Running build with params: -l ${C_YELLOW}${logLevelBuild}${C_RESET} -o ${C_YELLOW}${logFileBuild}${C_RESET} -t ${C_YELLOW}${threadCount}${C_RESET}"
 
 # export IGNORE_ERRORS=1
 time unbuffer \
