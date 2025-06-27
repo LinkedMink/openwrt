@@ -460,9 +460,10 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_PACKAGES += wireguard-tools kmod-wireguard luci-proto-wireguard
   DEVICE_PACKAGES += luci-app-samba4
   DEVICE_PACKAGES += prometheus-node-exporter-lua libubus-lua
-  DEVICE_PACKAGES += luci-app-dcwapd luci-app-acl luci-app-opkg luci-theme-material
+  DEVICE_PACKAGES += luci-app-dcwapd luci-app-opkg luci-theme-material
   DEVICE_PACKAGES += dnscrypt-proxy2
   DEVICE_PACKAGES += usb-modeswitch luci-proto-modemmanager kmod-usb-serial kmod-usb-net kmod-usb-serial-wwan kmod-usb-serial-option kmod-usb-net-qmi-wwan kmod-usb-net-cdc-mbim kmod-usb-net-huawei-cdc-ncm
+  DEVICE_PACKAGES += luci-app-ddns ddns-scripts ddns-scripts-cloudflare ca-bundle
   IMAGES := sysupgrade.itb
   KERNEL_LOADADDR := 0x44000000
   KERNEL_INITRAMFS_SUFFIX := -recovery.itb
@@ -481,17 +482,17 @@ define Device/bananapi_bpi-r3-kmod
 				   pad-to 17k | mt7986-bl2 sdmmc-ddr4 |\
 				   pad-to 6656k | mt7986-bl31-uboot bananapi_bpi-r3-kmod-sdmmc |\
 				$(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),\
-				   pad-to 12M | append-image-stage initramfs-recovery.itb | check-size 48m |\
+				   pad-to 12M | append-image-stage initramfs-recovery.itb | check-size 52m |\
 				) \
-				   pad-to 48M | mt7986-bl2 spim-nand-ubi-ddr4 |\
-				   pad-to 49M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-snand |\
-				   pad-to 53M | mt7986-bl2 nor-ddr4 |\
-				   pad-to 54M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-nor |\
-				   pad-to 55M | mt7986-bl2 emmc-ddr4 |\
-				   pad-to 56M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-emmc |\
-				   pad-to 60M | mt798x-gpt emmc |\
+				   pad-to 52M | mt7986-bl2 spim-nand-ubi-ddr4 |\
+				   pad-to 53M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-snand |\
+				   pad-to 57M | mt7986-bl2 nor-ddr4 |\
+				   pad-to 58M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-nor |\
+				   pad-to 59M | mt7986-bl2 emmc-ddr4 |\
+				   pad-to 60M | mt7986-bl31-uboot bananapi_bpi-r3-kmod-emmc |\
+				   pad-to 64M | mt798x-gpt emmc |\
 				$(if $(CONFIG_TARGET_ROOTFS_SQUASHFS),\
-				   pad-to 68M | append-image squashfs-sysupgrade.itb | check-size |\
+				   pad-to 72M | append-image squashfs-sysupgrade.itb | check-size |\
 				) \
 				  gzip
 ifeq ($(DUMP),)
