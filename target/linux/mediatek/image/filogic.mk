@@ -429,15 +429,28 @@ endif
 endef
 TARGET_DEVICES += bananapi_bpi-r3
 
-#  DEVICE_PACKAGES += node node-npm
-#  DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth 
-#  DEVICE_PACKAGES += rtl-sdr
-# DEVICE_PACKAGES += luci-ssl-nginx
-# DEVICE_PACKAGES += dnscrypt-proxy2
-# DEVICE_PACKAGES += openvpn-mbedtls luci-app-openvpn
-#  DEVICE_PACKAGES += usb-modeswitch luci-proto-modemmanager kmod-usb-serial kmod-usb-net kmod-usb-serial-wwan kmod-usb-serial-option kmod-usb-net-qmi-wwan kmod-usb-net-cdc-mbim kmod-usb-net-huawei-cdc-ncm
-# DEVICE_PACKAGES += luci-app-statistics collectd-mod-wireless collectd-mod-sensors prometheus-node-exporter-lua libubus-lua
-# Kernel Mod Full
+# Full Set
+#   DEVICE_PACKAGES += ethtool-full nmap-full i2c-tools
+#   DEVICE_PACKAGES += luci-nginx luci-ssl-nginx
+#   DEVICE_PACKAGES += keepalived conntrackd
+#   DEVICE_PACKAGES += luci-app-samba4
+#   DEVICE_PACKAGES += prometheus-node-exporter-lua libubus-lua
+#   DEVICE_PACKAGES += usb-modeswitch luci-proto-modemmanager kmod-usb-serial kmod-usb-net kmod-usb-serial-wwan kmod-usb-serial-option kmod-usb-net-qmi-wwan kmod-usb-net-cdc-mbim kmod-usb-net-huawei-cdc-ncm
+#   DEVICE_PACKAGES += curl ca-bundle
+#   DEVICE_PACKAGES += luci-app-ddns ddns-scripts ddns-scripts-cloudflare
+# Min Set 2
+#   DEVICE_PACKAGES += ethtool-full
+#   DEVICE_PACKAGES += luci-app-samba4
+#   DEVICE_PACKAGES += prometheus-node-exporter-lua libubus-lua
+#   DEVICE_PACKAGES += curl ca-bundle
+#   DEVICE_PACKAGES += luci-app-ddns ddns-scripts ddns-scripts-cloudflare
+# Evaluation
+#   DEVICE_PACKAGES += node node-npm
+#   DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth 
+#   DEVICE_PACKAGES += rtl-sdr
+#   DEVICE_PACKAGES += openvpn-mbedtls luci-app-openvpn
+#   DEVICE_PACKAGES += luci-app-statistics collectd-mod-wireless collectd-mod-sensors
+
 define Device/bananapi_bpi-r3-kmod
   DEVICE_VENDOR := Banana Pi
   DEVICE_MODEL := BPi-R3 (Modified)
@@ -453,17 +466,19 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_PACKAGES += f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount parted fdisk
   DEVICE_PACKAGES += kmod-nvme btrfs-progs kmod-fs-btrfs lsblk
   DEVICE_PACKAGES += kmod-crypto-user kmod-crypto-xts cryptsetup
-  DEVICE_PACKAGES += ethtool-full curl vim-full vim-runtime nmap-full i2c-tools
-  DEVICE_PACKAGES += -wpad-basic-mbedtls wpad-mbedtls
-  DEVICE_PACKAGES += luci-nginx luci-ssl-nginx
-  DEVICE_PACKAGES += keepalived conntrackd
   DEVICE_PACKAGES += wireguard-tools kmod-wireguard luci-proto-wireguard
-  DEVICE_PACKAGES += luci-app-samba4
-  DEVICE_PACKAGES += prometheus-node-exporter-lua libubus-lua
+  DEVICE_PACKAGES += -wpad-basic-mbedtls wpad-mbedtls
   DEVICE_PACKAGES += luci-app-dcwapd luci-app-opkg luci-theme-material
   DEVICE_PACKAGES += dnscrypt-proxy2
+  DEVICE_PACKAGES += vim-full vim-runtime
+  DEVICE_PACKAGES += ethtool-full nmap-full i2c-tools
+  DEVICE_PACKAGES += luci-nginx luci-ssl-nginx
+  DEVICE_PACKAGES += keepalived conntrackd
+  DEVICE_PACKAGES += luci-app-samba4
+  DEVICE_PACKAGES += prometheus-node-exporter-lua libubus-lua
   DEVICE_PACKAGES += usb-modeswitch luci-proto-modemmanager kmod-usb-serial kmod-usb-net kmod-usb-serial-wwan kmod-usb-serial-option kmod-usb-net-qmi-wwan kmod-usb-net-cdc-mbim kmod-usb-net-huawei-cdc-ncm
-  DEVICE_PACKAGES += luci-app-ddns ddns-scripts ddns-scripts-cloudflare ca-bundle
+  DEVICE_PACKAGES += curl ca-bundle
+  DEVICE_PACKAGES += luci-app-ddns ddns-scripts ddns-scripts-cloudflare
   IMAGES := sysupgrade.itb
   KERNEL_LOADADDR := 0x44000000
   KERNEL_INITRAMFS_SUFFIX := -recovery.itb
@@ -503,8 +518,8 @@ endif
 	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | pad-to 64k
   IMAGE/sysupgrade.itb := append-kernel | fit gzip $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb external-static-with-rootfs | pad-rootfs | append-metadata
   DEVICE_DTC_FLAGS := --pad 4096
-  DEVICE_COMPAT_VERSION := 1.2
-  DEVICE_COMPAT_MESSAGE := SPI-NAND flash layout changes require bootloader update
+  DEVICE_COMPAT_VERSION := 1.3
+  DEVICE_COMPAT_MESSAGE := First sfp port renamed from eth1 to sfp1
   SUPPORTED_DEVICES += bananapi,bpi-r3
 endef
 TARGET_DEVICES += bananapi_bpi-r3-kmod
