@@ -265,11 +265,6 @@ static inline int rtl931x_mac_force_mode_ctrl(int p)
 	return RTL931X_MAC_FORCE_MODE_CTRL + (p << 2);
 }
 
-static inline int rtl931x_mac_link_spd_sts(int p)
-{
-	return RTL931X_MAC_LINK_SPD_STS + (((p >> 3) << 2));
-}
-
 static inline int rtl931x_mac_port_ctrl(int p)
 {
 	return RTL931X_MAC_L2_PORT_CTRL + (p << 7);
@@ -563,6 +558,7 @@ static void rtl931x_fill_l2_row(u32 r[], struct rtl838x_l2_entry *e)
 
 	r[0] |= e->is_open_flow ? BIT(30) : 0;
 	r[0] |= e->is_pe_forward ? BIT(29) : 0;
+	r[0] |= e->hash_msb ? BIT(28): 0;
 	r[2] = e->next_hop ? BIT(30) : 0;
 	r[0] |= (e->rvid & 0xfff) << 16;
 
@@ -680,10 +676,21 @@ static void rtl931x_write_l2_entry_using_hash(u32 hash, u32 pos, struct rtl838x_
 	u32 r[4];
 	struct table_reg *q = rtl_table_get(RTL9310_TBL_0, 0);
 	u32 idx = (0 << 14) | (hash << 2) | pos; /* Access SRAM, with hash and at pos in bucket */
+	int hash_algo_id;
 
 	pr_debug("%s: hash %d, pos %d\n", __func__, hash, pos);
 	pr_debug("%s: index %d -> mac %02x:%02x:%02x:%02x:%02x:%02x\n", __func__, idx,
 		e->mac[0], e->mac[1], e->mac[2], e->mac[3],e->mac[4],e->mac[5]);
+
+	if (idx < 0x4000)
+		hash_algo_id = sw_r32(RTL931X_L2_CTRL) & BIT(0);
+	else
+		hash_algo_id = (sw_r32(RTL931X_L2_CTRL) & BIT(1)) >> 1;
+
+	if (hash_algo_id == 0)
+		e->hash_msb = (e->rvid >> 2) & 0x1;
+	else
+		e->hash_msb = (e->rvid >> 11) & 0x1;
 
 	rtl931x_fill_l2_row(r, e);
 	pr_debug("%s: %d: %08x %08x %08x\n", __func__, idx, r[0], r[1], r[2]);
@@ -1557,11 +1564,6 @@ const struct rtl838x_reg rtl931x_reg = {
 	.mir_ctrl = RTL931X_MIR_CTRL,
 	.mir_dpm = RTL931X_MIR_DPM_CTRL,
 	.mir_spm = RTL931X_MIR_SPM_CTRL,
-	.mac_link_sts = RTL931X_MAC_LINK_STS,
-	.mac_link_dup_sts = RTL931X_MAC_LINK_DUP_STS,
-	.mac_link_spd_sts = rtl931x_mac_link_spd_sts,
-	.mac_rx_pause_sts = RTL931X_MAC_RX_PAUSE_STS,
-	.mac_tx_pause_sts = RTL931X_MAC_TX_PAUSE_STS,
 	.read_l2_entry_using_hash = rtl931x_read_l2_entry_using_hash,
 	.write_l2_entry_using_hash = rtl931x_write_l2_entry_using_hash,
 	.read_cam = rtl931x_read_cam,
