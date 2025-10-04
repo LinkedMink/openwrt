@@ -8,7 +8,28 @@ BIN_FILES=(
     "openwrt-mediatek-filogic-bananapi_bpi-r3-kmod-sdcard.img.gz"
     "openwrt-mediatek-filogic-bananapi_bpi-r3-kmod-squashfs-sysupgrade.itb"
 )
-OUTPUT_DIR=${1:-"/mnt/d/bin/openwrt"}
+OUTPUT_DIR=${1:-"/mnt/e/bin/openwrt"}
+
+copyBinFile() {
+    local binFile=$1
+
+    if [ -f "$OUTPUT_DIR/$binFile" ]; then
+        local backupCount=0
+        local fileName="${binFile%%.*}"
+        local fileExtension="${binFile#*.}"
+        local backupPath="${OUTPUT_DIR}/${fileName}.${backupCount}.${fileExtension}"
+
+        while [ -f "$backupPath" ]
+        do
+            backupCount=$((backupCount + 1))
+            backupPath="${OUTPUT_DIR}/${fileName}.${backupCount}.${fileExtension}"
+        done
+
+        mv "$OUTPUT_DIR/$binFile" "$backupPath"
+    fi
+
+    cp "bin/targets/mediatek/filogic/$binFile" "$OUTPUT_DIR/$binFile"
+}
 
 #endregion
 #region Main
@@ -16,12 +37,7 @@ OUTPUT_DIR=${1:-"/mnt/d/bin/openwrt"}
 logInfo "Copying to: $OUTPUT_DIR"
 
 for binFile in "${BIN_FILES[@]}"; do
-    if [ -f "$OUTPUT_DIR/$binFile" ]; then
-        rm -f "$OUTPUT_DIR/$binFile.$BACKUP_SUFFIX"
-        mv "$OUTPUT_DIR/$binFile" "$OUTPUT_DIR/$binFile.$BACKUP_SUFFIX"
-    fi
-
-    cp "bin/targets/mediatek/filogic/$binFile" "$OUTPUT_DIR/$binFile"
+    copyBinFile $binFile
 done
 
 #endregion

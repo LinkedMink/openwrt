@@ -11,6 +11,7 @@ threadCount=$(($(nproc) - $(nproc) / 4))
 cleanTargets=
 isPredownloaded=false
 isConfigReset=false
+isCompilationErrorsIgnored=false
 
 #endregion
 #region Parse Args
@@ -23,11 +24,12 @@ usage() {
   echo "  -c <kernel|package|target|build> cleanTargets"
   echo "  -d isPredownloaded"
   echo "  -r isConfigReset"
+  echo "  -i isCompilationErrorsIgnored"
   exit 1
 }
 
 option=
-while getopts l:o:t:c:dr option; do
+while getopts l:o:t:c:dri option; do
   case "$option" in
   l)
     logLevelBuild=$OPTARG
@@ -55,6 +57,9 @@ while getopts l:o:t:c:dr option; do
   r)
     isConfigReset=true
     ;;
+  i)
+    isCompilationErrorsIgnored=true
+    ;;
   *)
     echo "Invalid Argument: $option"
     usage
@@ -71,6 +76,7 @@ Options:
   cleanTargets=$cleanTargets
   isPredownloaded=$isPredownloaded
   isConfigReset=$isConfigReset
+  isCompilationErrorsIgnored=$isCompilationErrorsIgnored
 EOT
 )"
 
@@ -106,6 +112,10 @@ if [ "$isPredownloaded" = true ]; then
   make download
 fi
 
+if [ "$isCompilationErrorsIgnored" = true ]; then
+  export IGNORE_ERRORS=1
+fi
+
 rm -f "$logFileBuild"
 
 #endregion
@@ -114,7 +124,6 @@ rm -f "$logFileBuild"
 logInfo "---------- Build START ----------"
 logInfo "Running build with params: -l ${C_YELLOW}${logLevelBuild}${C_RESET} -o ${C_YELLOW}${logFileBuild}${C_RESET} -t ${C_YELLOW}${threadCount}${C_RESET}"
 
-# export IGNORE_ERRORS=1
 time unbuffer \
   make -j "$threadCount" V="$logLevelBuild" |
   tee "$logFileBuild"

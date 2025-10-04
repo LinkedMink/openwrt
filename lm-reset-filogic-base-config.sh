@@ -4,6 +4,7 @@
 source lm-utility.sh
 
 CONFIG_BACKUP_SUFFIX="prereset"
+CONFIG_DEFAULT_URL="https://downloads.openwrt.org/snapshots/targets/mediatek/filogic/config.buildinfo"
 
 #endregion
 #region Main
@@ -19,42 +20,27 @@ if [ -f .config.old ]; then
   mv .config.old ".config.$CONFIG_BACKUP_SUFFIX.old"
 fi
 
+logInfo "Download base filogic build config: $CONFIG_DEFAULT_URL"
+
+wget $CONFIG_DEFAULT_URL -O .config
+
+logInfo "Modify base filogic build config: .config"
+
+sed -i '/CONFIG_TARGET_DEVICE/d' .config
+sed -i '/CONFIG_TARGET_ALL_PROFILES/d' .config
 tee -a .config <<EOF
-CONFIG_TARGET_mediatek=y
-CONFIG_TARGET_mediatek_filogic=y
-# CONFIG_TARGET_MULTI_PROFILE is not set
-CONFIG_TARGET_mediatek_filogic_DEVICE_bananapi_bpi-r3-kmod=y
-
-# CONFIG_ALL_NONSHARED is not set
-# CONFIG_ALL_KMODS is not set
-CONFIG_DEVEL=y
-CONFIG_TARGET_PER_DEVICE_ROOTFS=y
-CONFIG_AUTOREMOVE=y
-CONFIG_BUILDBOT=y
-CONFIG_COLLECT_KERNEL_DEBUG=y
-CONFIG_IB=y
-CONFIG_JSON_CYCLONEDX_SBOM=y
-CONFIG_KERNEL_BUILD_DOMAIN="buildhost"
-CONFIG_KERNEL_BUILD_USER="builder"
-CONFIG_MAKE_TOOLCHAIN=y
-CONFIG_REPRODUCIBLE_DEBUG_INFO=y
-CONFIG_SDK=y
-CONFIG_SDK_LLVM_BPF=y
-
 CONFIG_TARGET_ROOTFS_PARTSIZE=768
+CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_bananapi_bpi-r3-kmod=y
+CONFIG_TARGET_DEVICE_PACKAGES_mediatek_filogic_DEVICE_bananapi_bpi-r3-kmod=""
 CONFIG_TARGET_OPTIONS=y
+CONFIG_TARGET_ALL_PROFILES=n
 CONFIG_TARGET_PREINIT_IP="192.168.128.32"
 CONFIG_TARGET_PREINIT_NETMASK="255.255.255.0"
 CONFIG_TARGET_PREINIT_BROADCAST="192.168.128.255"
 
 EOF
 
-# CONFIG_ALL_KMODS=y
-# CONFIG_ALL_NONSHARED=y
-
 # CONFIG_LIBQMI_COLLECTION_FULL=y
-# # CONFIG_PACKAGE_kmod-ipt-rtpengine is not set
-# # CONFIG_PACKAGE_kmod-openvswitch is not set
 # # CONFIG_PACKAGE_kmod-pf-ring is not set
 
 # CONFIG_TARGET_ROOTFS_PERSIST_VAR=y

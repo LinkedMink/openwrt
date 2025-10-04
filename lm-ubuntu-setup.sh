@@ -24,6 +24,11 @@ sudo apt install \
 
 logInfo "Setup build configuration for forked repo"
 
+# https://github.com/microsoft/WSL/issues/10006#issuecomment-3150737313
+timedatectl set-timezone America/Chicago
+sudo timedatectl set-ntp false
+# wsl.exe --shutdown
+
 git remote add upstream $OPENWRT_GIT_REPO_URL
 
 ./lm-reset-filogic-config.sh
