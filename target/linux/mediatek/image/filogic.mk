@@ -546,28 +546,11 @@ endif
 endef
 TARGET_DEVICES += bananapi_bpi-r3
 
-# Full Set
-#   DEVICE_PACKAGES += ethtool-full nmap-full i2c-tools
-#   DEVICE_PACKAGES += luci-nginx luci-ssl-nginx
-#   DEVICE_PACKAGES += keepalived conntrackd
-#   DEVICE_PACKAGES += luci-app-samba4
-#   DEVICE_PACKAGES += prometheus-node-exporter-lua libubus-lua
-#   DEVICE_PACKAGES += usb-modeswitch luci-proto-modemmanager kmod-usb-serial kmod-usb-net kmod-usb-serial-wwan \
-# 		     kmod-usb-serial-option kmod-usb-net-qmi-wwan kmod-usb-net-cdc-mbim kmod-usb-net-huawei-cdc-ncm
-#   DEVICE_PACKAGES += curl ca-bundle
-#   DEVICE_PACKAGES += luci-app-ddns ddns-scripts ddns-scripts-cloudflare
-# Min Set 2
-#   DEVICE_PACKAGES += ethtool-full
-#   DEVICE_PACKAGES += luci-app-samba4
-#   DEVICE_PACKAGES += prometheus-node-exporter-lua libubus-lua
-#   DEVICE_PACKAGES += curl ca-bundle
-#   DEVICE_PACKAGES += luci-app-ddns ddns-scripts ddns-scripts-cloudflare
 # Evaluation
 #   DEVICE_PACKAGES += node node-npm
 #   DEVICE_PACKAGES += kmod-mt7921e mt7921bt-firmware kmod-bluetooth 
 #   DEVICE_PACKAGES += rtl-sdr
 #   DEVICE_PACKAGES += openvpn-mbedtls luci-app-openvpn
-#   DEVICE_PACKAGES += luci-app-statistics collectd-mod-wireless collectd-mod-sensors
 
 # DEVICE_PACKAGES += -wpad-basic-mbedtls wpad-mbedtls luci-app-dcwapd
 
@@ -600,6 +583,8 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_PACKAGES += keepalived conntrackd
   DEVICE_PACKAGES += luci-app-samba4
   DEVICE_PACKAGES += nmap-full i2c-tools
+  DEVICE_PACKAGES += usb-modeswitch luci-proto-modemmanager kmod-usb-serial kmod-usb-net kmod-usb-serial-wwan \
+		     kmod-usb-serial-option kmod-usb-net-qmi-wwan kmod-usb-net-cdc-mbim kmod-usb-net-huawei-cdc-ncm
   IMAGES := sysupgrade.itb
   KERNEL_LOADADDR := 0x44000000
   KERNEL_INITRAMFS_SUFFIX := -recovery.itb

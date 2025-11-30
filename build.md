@@ -1,6 +1,6 @@
 # Image Builder
 
-[Bananapi BPi-R3](https://firmware-selector.openwrt.org/?version=24.10.2&target=mediatek%2Ffilogic&id=bananapi_bpi-r3)
+[Bananapi BPi-R3](https://firmware-selector.openwrt.org/?version=24.10.3&target=mediatek%2Ffilogic&id=bananapi_bpi-r3)
 
 Default Packages:
 

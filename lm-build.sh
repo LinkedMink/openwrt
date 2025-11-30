@@ -7,7 +7,7 @@ source lm-utility.sh
 
 logLevelBuild="1" # 1-99, s, sc
 logFileBuild="build.log"
-threadCount=$(($(nproc) - $(nproc) / 4))
+threadCount=$(($(nproc) - $(nproc) / 5))
 cleanTargets=
 isPredownloaded=false
 isConfigReset=false
