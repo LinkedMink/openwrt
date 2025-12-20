@@ -599,7 +599,7 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_PACKAGES += curl ca-bundle
   DEVICE_PACKAGES += luci-app-ddns ddns-scripts ddns-scripts-cloudflare
   DEVICE_PACKAGES += prometheus-node-exporter-lua prometheus-node-exporter-lua-nat_traffic \
-		     prometheus-node-exporter-lua-netstat libubus-lua
+		     prometheus-node-exporter-lua-netstat prometheus-node-exporter-lua-openwrt prometheus-node-exporter-lua-hwmon libubus-lua
   DEVICE_PACKAGES += -wpad-basic-mbedtls wpad-mbedtls
   DEVICE_PACKAGES += luci-nginx luci-ssl-nginx
   DEVICE_PACKAGES += keepalived conntrackd

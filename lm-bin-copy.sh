@@ -3,12 +3,11 @@
 
 source lm-utility.sh
 
-BACKUP_SUFFIX="bak"
 BIN_FILES=(
     "openwrt-mediatek-filogic-bananapi_bpi-r3-kmod-sdcard.img.gz"
     "openwrt-mediatek-filogic-bananapi_bpi-r3-kmod-squashfs-sysupgrade.itb"
 )
-OUTPUT_DIR=${1:-"/mnt/e/bin/openwrt"}
+OUTPUT_DIR=${1:-"/mnt/d/bin/openwrt"}
 
 copyBinFile() {
     local binFile=$1

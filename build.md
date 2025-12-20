@@ -1,6 +1,6 @@
 # Image Builder
 
-[Bananapi BPi-R3](https://firmware-selector.openwrt.org/?version=24.10.3&target=mediatek%2Ffilogic&id=bananapi_bpi-r3)
+[Bananapi BPi-R3](https://firmware-selector.openwrt.org/?version=24.10.5&target=mediatek%2Ffilogic&id=bananapi_bpi-r3)
 
 Default Packages:
 
@@ -25,7 +25,6 @@ vim-full vim-runtime
 ethtool-full
 curl ca-bundle
 luci-app-ddns ddns-scripts ddns-scripts-cloudflare
-prometheus-node-exporter-lua prometheus-node-exporter-lua-nat_traffic prometheus-node-exporter-lua-netstat libubus-lua
-usb-modeswitch luci-proto-modemmanager kmod-usb-serial kmod-usb-net kmod-usb-serial-wwan kmod-usb-serial-option kmod-usb-net-qmi-wwan kmod-usb-net-cdc-mbim kmod-usb-net-huawei-cdc-ncm
+prometheus-node-exporter-lua prometheus-node-exporter-lua-nat_traffic prometheus-node-exporter-lua-netstat prometheus-node-exporter-lua-openwrt prometheus-node-exporter-lua-hwmon libubus-lua
 ```
 
