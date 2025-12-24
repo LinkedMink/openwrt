@@ -392,6 +392,37 @@ endif
 endef
 TARGET_DEVICES += asus_rt-ax52
 
+define Device/asus_rt-ax57m
+  DEVICE_VENDOR := ASUS
+  DEVICE_MODEL := RT-AX57M
+  DEVICE_ALT0_VENDOR := ASUS
+  DEVICE_ALT0_MODEL := RT-AX54HP
+  DEVICE_ALT0_VARIANT := V2
+  DEVICE_ALT1_VENDOR := ASUS
+  DEVICE_ALT1_MODEL := RT-AX1800HP
+  DEVICE_ALT1_VARIANT := V2
+  DEVICE_ALT2_VENDOR := ASUS
+  DEVICE_ALT2_MODEL := RT-AX1800S
+  DEVICE_ALT2_VARIANT := V2
+  DEVICE_ALT3_VENDOR := ASUS
+  DEVICE_ALT3_MODEL := RT-AX3000S
+  DEVICE_DTS := mt7981b-asus-rt-ax57m
+  DEVICE_DTS_DIR := ../dts
+  DEVICE_PACKAGES := kmod-mt7915e kmod-mt7981-firmware mt7981-wo-firmware
+  IMAGES := sysupgrade.bin
+  KERNEL := kernel-bin | lzma | \
+	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
+  KERNEL_INITRAMFS := kernel-bin | lzma | \
+	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb  with-initrd | pad-to 64k
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+ifeq ($(IB),)
+  ARTIFACTS := initramfs.trx
+  ARTIFACT/initramfs.trx := append-image-stage initramfs-kernel.bin | \
+	uImage none | asus-trx -v 3 -n $$(DEVICE_MODEL)
+endif
+endef
+TARGET_DEVICES += asus_rt-ax57m
+
 define Device/asus_rt-ax59u
   DEVICE_VENDOR := ASUS
   DEVICE_MODEL := RT-AX59U
@@ -935,11 +966,11 @@ define Device/cmcc_rax3000m
 	nand-ddr4-bl31-uboot.fip nand-ddr4-preloader.bin
   ARTIFACT/emmc-gpt.bin := mt798x-gpt emmc
   ARTIFACT/emmc-ddr3-bl31-uboot.fip := mt7981-bl31-uboot cmcc_rax3000m-emmc-ddr3
-  ARTIFACT/emmc-ddr3-preloader.bin  := mt7981-bl2 emmc-ddr3-1866mhz
+  ARTIFACT/emmc-ddr3-preloader.bin  := mt7981-bl2 emmc-ddr3-1866
   ARTIFACT/emmc-ddr4-bl31-uboot.fip := mt7981-bl31-uboot cmcc_rax3000m-emmc-ddr4
   ARTIFACT/emmc-ddr4-preloader.bin  := mt7981-bl2 emmc-ddr4
   ARTIFACT/nand-ddr3-bl31-uboot.fip := mt7981-bl31-uboot cmcc_rax3000m-nand-ddr3
-  ARTIFACT/nand-ddr3-preloader.bin  := mt7981-bl2 spim-nand-ddr3-1866mhz
+  ARTIFACT/nand-ddr3-preloader.bin  := mt7981-bl2 spim-nand-ddr3-1866
   ARTIFACT/nand-ddr4-bl31-uboot.fip := mt7981-bl31-uboot cmcc_rax3000m-nand-ddr4
   ARTIFACT/nand-ddr4-preloader.bin  := mt7981-bl2 spim-nand-ddr4
 endef
