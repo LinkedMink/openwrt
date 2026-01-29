@@ -726,7 +726,7 @@ define Device/linksys_mr6350
 	PAGESIZE := 2048
 	UBINIZE_OPTS := -E 5    # EOD marks to "hide" factory sig at EOF
 	IMAGES += factory.bin
-	IMAGE/factory.bin  := append-kernel | pad-to $$(KERNEL_SIZE) | append-ubi | linksys-image type=MR6350
+	IMAGE/factory.bin  := append-kernel | pad-to $$$$(KERNEL_SIZE) | append-ubi | linksys-image type=MR6350
 	DEVICE_PACKAGES := ipq-wifi-linksys_mr6350 kmod-usb-ledtrig-usbport
 endef
 TARGET_DEVICES += linksys_mr6350
@@ -821,6 +821,14 @@ define Device/meraki_common
 	DEVICE_DTS_LOADADDR := 0x89000000
 	DEVICE_PACKAGES := ath10k-firmware-qca9887-ct
 endef
+
+define Device/meraki_mr20
+	$(call Device/meraki_common)
+	DEVICE_MODEL := MR20
+	DEVICE_DTS_CONFIG := config@4
+	DEVICE_PACKAGES := ipq-wifi-meraki_underdog
+endef
+TARGET_DEVICES += meraki_mr20
 
 define Device/meraki_mr30h
 	$(call Device/meraki_common)

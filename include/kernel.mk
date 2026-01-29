@@ -212,7 +212,6 @@ define KernelPackage
     TITLE:=$(TITLE)
     SECTION:=kernel
     CATEGORY:=Kernel modules
-    DESCRIPTION:=$(DESCRIPTION)
     EXTRA_DEPENDS:=kernel (=$(subst -rc,_rc,$(LINUX_VERSION))~$(LINUX_VERMAGIC)-r$(LINUX_RELEASE))
     VERSION:=$(subst -rc,_rc,$(LINUX_VERSION))$(if $(PKG_VERSION),.$(PKG_VERSION))-r$(if $(PKG_RELEASE),$(PKG_RELEASE),$(LINUX_RELEASE))
     PKGFLAGS:=$(PKGFLAGS)
@@ -306,4 +305,3 @@ kernel_patchver_ge=$(call kernel_version_cmp,-ge,$(KERNEL_PATCHVER),$(1))
 kernel_patchver_eq=$(call kernel_version_cmp,-eq,$(KERNEL_PATCHVER),$(1))
 kernel_patchver_le=$(call kernel_version_cmp,-le,$(KERNEL_PATCHVER),$(1))
 kernel_patchver_lt=$(call kernel_version_cmp,-lt,$(KERNEL_PATCHVER),$(1))
-
