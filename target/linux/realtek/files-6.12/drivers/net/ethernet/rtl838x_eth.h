@@ -403,10 +403,12 @@ inline u32 rtl931x_get_mac_tx_pause_sts(int p)
 struct p_hdr;
 struct dsa_tag;
 struct rteth_ctrl;
+struct rteth_packet;
 
 struct rteth_config {
 	int family_id;
 	int cpu_port;
+	int rx_rings;
 	irqreturn_t (*net_irq)(int irq, void *dev_id);
 	int mac_l2_port_ctrl;
 	int dma_if_intr_sts;
@@ -434,7 +436,7 @@ struct rteth_config {
 	u32 (*get_mac_tx_pause_sts)(int port);
 	int mac;
 	int l2_tbl_flush_ctrl;
-	void (*create_tx_header)(struct p_hdr *h, unsigned int dest_port, int prio);
+	void (*create_tx_header)(struct rteth_packet *h, unsigned int dest_port, int prio);
 	bool (*decode_tag)(struct p_hdr *h, struct dsa_tag *tag);
 	void (*hw_reset)(struct rteth_ctrl *ctrl);
 	int (*init_mac)(struct rteth_ctrl *ctrl);
