@@ -646,7 +646,7 @@ define Device/bananapi_bpi-r3-kmod
   DEVICE_PACKAGES += kmod-nvme btrfs-progs kmod-fs-btrfs lsblk
   DEVICE_PACKAGES += kmod-crypto-user kmod-crypto-xts cryptsetup
   DEVICE_PACKAGES += wireguard-tools kmod-wireguard luci-proto-wireguard
-  DEVICE_PACKAGES += luci-app-opkg luci-theme-material
+  DEVICE_PACKAGES += luci-theme-material
   DEVICE_PACKAGES += dnscrypt-proxy2
   DEVICE_PACKAGES += vim-full vim-runtime
   DEVICE_PACKAGES += ethtool-full

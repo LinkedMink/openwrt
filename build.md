@@ -1,6 +1,6 @@
 # Image Builder
 
-[Bananapi BPi-R3](https://firmware-selector.openwrt.org/?version=25.12.2&target=mediatek%2Ffilogic&id=bananapi_bpi-r3)
+[Bananapi BPi-R3](https://firmware-selector.openwrt.org/?version=25.12.3&target=mediatek%2Ffilogic&id=bananapi_bpi-r3)
 
 Default Packages:
 
@@ -19,7 +19,7 @@ f2fs-tools kmod-fs-exfat kmod-fs-msdos libblkid1 kmod-usb-storage block-mount pa
 kmod-nvme btrfs-progs kmod-fs-btrfs lsblk
 kmod-crypto-user kmod-crypto-xts cryptsetup
 wireguard-tools kmod-wireguard luci-proto-wireguard
-luci-app-opkg luci-theme-material
+luci-theme-material
 dnscrypt-proxy2
 vim-full vim-runtime
 ethtool-full
