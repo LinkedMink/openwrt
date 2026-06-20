@@ -26,5 +26,5 @@ ethtool-full
 curl ca-bundle
 luci-app-ddns ddns-scripts ddns-scripts-cloudflare
 prometheus-node-exporter-lua prometheus-node-exporter-lua-nat_traffic prometheus-node-exporter-lua-netstat prometheus-node-exporter-lua-openwrt prometheus-node-exporter-lua-hwmon libubus-lua
+fstrim
 ```
-
