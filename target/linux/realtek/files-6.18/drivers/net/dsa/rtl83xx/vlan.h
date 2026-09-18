@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 
-#ifndef _OTTO_VLAN_H_
-#define _OTTO_VLAN_H_
+#ifndef _OTTO_VLAN_H
+#define _OTTO_VLAN_H
 
 #include <linux/netlink.h>
 #include <linux/types.h>
@@ -9,6 +9,41 @@
 #include <net/switchdev.h>
 
 struct rtl838x_switch_priv;
+
+/* VLAN definitions shared with family and debug code. */
+#define RTL838X_VLAN_CTRL			(0x3a74)
+#define RTL838X_VLAN_PORT_EGR_FLTR		(0x3a84)
+#define RTL838X_VLAN_PORT_IGR_FLTR		(0x3a7c)
+#define RTL838X_VLAN_PROFILE_MAX		7
+#define RTL838X_VLAN_STP_CTRL			(0x3b20)
+
+#define RTL839X_VLAN_CTRL			(0x26d4)
+#define RTL839X_VLAN_PORT_EGR_FLTR		(0x27c4)
+#define RTL839X_VLAN_PORT_IGR_FLTR		(0x27b4)
+#define RTL839X_VLAN_PROFILE_MAX		7
+
+#define RTL930X_VLAN_CTRL			(0x82d4)
+#define RTL930X_VLAN_PORT_EGR_FLTR		(0x83c8)
+#define RTL930X_VLAN_PORT_IGR_FLTR		(0x83c0)
+#define RTL930X_VLAN_PROFILE_MAX		7
+
+#define RTL931X_VLAN_CTRL			(0x94e4)
+#define RTL931X_VLAN_PORT_EGR_FLTR		(0x96c4)
+#define RTL931X_VLAN_PORT_IGR_FLTR		(0x96b4)
+#define RTL931X_VLAN_PROFILE_MAX		15
+
+#define MAX_VLANS				4096
+
+enum igr_filter {
+	IGR_FORWARD = 0,
+	IGR_DROP = 1,
+	IGR_TRAP = 2,
+};
+
+enum egr_filter {
+	EGR_DISABLE = 0,
+	EGR_ENABLE = 1,
+};
 
 enum pbvlan_type {
 	PBVLAN_TYPE_INNER = 0,
@@ -109,4 +144,9 @@ int rtldsa_port_vlan_fast_age(struct dsa_switch *ds, int port, u16 vid);
 int rtldsa_vlan_msti_set(struct dsa_switch *ds, struct dsa_bridge bridge,
 			 const struct switchdev_vlan_msti *msti);
 
-#endif /* _OTTO_VLAN_H_ */
+bool rtldsa_mst_put_slot(struct rtl838x_switch_priv *priv, u16 mst_slot);
+int rtldsa_mst_replace(struct rtl838x_switch_priv *priv, u16 msti, u16 old_mst_slot);
+int rtldsa_port_get_stp_state(struct rtl838x_switch_priv *priv, int port);
+void rtldsa_port_stp_state_set(struct dsa_switch *ds, int port, u8 state);
+
+#endif /* _OTTO_VLAN_H */
