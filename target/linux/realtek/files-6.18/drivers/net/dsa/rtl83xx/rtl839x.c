@@ -3,97 +3,65 @@
 #include <asm/mach-rtl-otto/mach-rtl-otto.h>
 #include <linux/etherdevice.h>
 
+#include "lag.h"
 #include "l2.h"
 #include "l3.h"
 #include "pie.h"
 #include "qos.h"
+#include "mirror.h"
+#include "mac.h"
 #include "rtl-otto.h"
 #include "stats.h"
 #include "vlan.h"
+#include "stp.h"
 
-const struct rtldsa_mib_list_item rtldsa_839x_mib_list[] = {
-	MIB_LIST_ITEM("ifOutDiscards", MIB_ITEM(MIB_REG_STD, 0xd4, 1)),
-	MIB_LIST_ITEM("dot1dTpPortInDiscards", MIB_ITEM(MIB_REG_STD, 0xd0, 1)),
-	MIB_LIST_ITEM("DropEvents", MIB_ITEM(MIB_REG_STD, 0xa8, 1)),
-	MIB_LIST_ITEM("tx_BroadcastPkts", MIB_ITEM(MIB_REG_STD, 0xa4, 1)),
-	MIB_LIST_ITEM("tx_MulticastPkts", MIB_ITEM(MIB_REG_STD, 0xa0, 1)),
-	MIB_LIST_ITEM("tx_UndersizePkts", MIB_ITEM(MIB_REG_STD, 0x98, 1)),
-	MIB_LIST_ITEM("rx_UndersizeDropPkts", MIB_ITEM(MIB_REG_STD, 0x90, 1)),
-	MIB_LIST_ITEM("tx_OversizePkts", MIB_ITEM(MIB_REG_STD, 0x8c, 1)),
-	MIB_LIST_ITEM("Collisions", MIB_ITEM(MIB_REG_STD, 0x7c, 1)),
-	MIB_LIST_ITEM("rx_LengthFieldError", MIB_ITEM(MIB_REG_STD, 0x40, 1)),
-	MIB_LIST_ITEM("rx_FalseCarrierTimes", MIB_ITEM(MIB_REG_STD, 0x3c, 1)),
-	MIB_LIST_ITEM("rx_UnderSizeOctets", MIB_ITEM(MIB_REG_STD, 0x38, 1)),
-	MIB_LIST_ITEM("tx_Fragments", MIB_ITEM(MIB_REG_STD, 0x34, 1)),
-	MIB_LIST_ITEM("tx_Jabbers", MIB_ITEM(MIB_REG_STD, 0x30, 1)),
-	MIB_LIST_ITEM("tx_CRCAlignErrors", MIB_ITEM(MIB_REG_STD, 0x2c, 1)),
-	MIB_LIST_ITEM("rx_FramingErrors", MIB_ITEM(MIB_REG_STD, 0x28, 1)),
-	MIB_LIST_ITEM("rx_MacDiscards", MIB_ITEM(MIB_REG_STD, 0x24, 1))
-};
+#define RTL839X_MAC_PORT_CTRL(port)		(0x8004 + (((port) << 7)))
 
-const struct rtldsa_mib_desc rtldsa_839x_mib_desc = {
-	.symbol_errors = MIB_ITEM(MIB_REG_STD, 0xb8, 1),
+/* MAC maximum packet length (jumbo frame) control.
+ *
+ * The switch MAC drops frames whose L2 length exceeds the configured maximum.
+ * A family holds either one register per user port or a single one for the
+ * whole switch. The length is a direct byte value held in two 14-bit fields
+ * (high-speed links in [13:0], 10/100M links in [27:14]); bit 28 selects
+ * whether VLAN tag bytes count towards the limit.
+ */
 
-	.if_in_octets = MIB_ITEM(MIB_REG_STD, 0xf8, 2),
-	.if_out_octets = MIB_ITEM(MIB_REG_STD, 0xf0, 2),
-	.if_in_ucast_pkts = MIB_ITEM(MIB_REG_STD, 0xec, 1),
-	.if_in_mcast_pkts = MIB_ITEM(MIB_REG_STD, 0xe8, 1),
-	.if_in_bcast_pkts = MIB_ITEM(MIB_REG_STD, 0xe4, 1),
-	.if_out_ucast_pkts = MIB_ITEM(MIB_REG_STD, 0xe0, 1),
-	.if_out_mcast_pkts = MIB_ITEM(MIB_REG_STD, 0xdc, 1),
-	.if_out_bcast_pkts = MIB_ITEM(MIB_REG_STD, 0xd8, 1),
-	.if_out_discards = MIB_ITEM(MIB_REG_STD, 0xd4, 1),
-	.single_collisions = MIB_ITEM(MIB_REG_STD, 0xcc, 1),
-	.multiple_collisions = MIB_ITEM(MIB_REG_STD, 0xc8, 1),
-	.deferred_transmissions = MIB_ITEM(MIB_REG_STD, 0xc4, 1),
-	.late_collisions = MIB_ITEM(MIB_REG_STD, 0xc0, 1),
-	.excessive_collisions = MIB_ITEM(MIB_REG_STD, 0xbc, 1),
-	.crc_align_errors = MIB_ITEM(MIB_REG_STD, 0x9c, 1),
+#define RTL839X_MAC_MAX_LEN_CTRL		(0x02b0)
 
-	.unsupported_opcodes = MIB_ITEM(MIB_REG_STD, 0xb4, 1),
+#define RTL839X_MAX_FRAME			12288
 
-	.rx_undersize_pkts = MIB_ITEM(MIB_REG_STD, 0x94, 1),
-	.rx_oversize_pkts = MIB_ITEM(MIB_REG_STD, 0x88, 1),
-	.rx_fragments = MIB_ITEM(MIB_REG_STD, 0x84, 1),
-	.rx_jabbers = MIB_ITEM(MIB_REG_STD, 0x80, 1),
+#define RTL839X_MAC_FORCE_MODE_CTRL		(0x02bc)
 
-	.tx_pkts = {
-		MIB_ITEM(MIB_REG_STD, 0x78, 1),
-		MIB_ITEM(MIB_REG_STD, 0x70, 1),
-		MIB_ITEM(MIB_REG_STD, 0x68, 1),
-		MIB_ITEM(MIB_REG_STD, 0x60, 1),
-		MIB_ITEM(MIB_REG_STD, 0x58, 1),
-		MIB_ITEM(MIB_REG_STD, 0x50, 1),
-		MIB_ITEM(MIB_REG_STD, 0x48, 1)
-	},
-	.rx_pkts = {
-		MIB_ITEM(MIB_REG_STD, 0x74, 1),
-		MIB_ITEM(MIB_REG_STD, 0x6c, 1),
-		MIB_ITEM(MIB_REG_STD, 0x64, 1),
-		MIB_ITEM(MIB_REG_STD, 0x5c, 1),
-		MIB_ITEM(MIB_REG_STD, 0x54, 1),
-		MIB_ITEM(MIB_REG_STD, 0x4c, 1),
-		MIB_ITEM(MIB_REG_STD, 0x44, 1)
-	},
-	.rmon_ranges = {
-		{ 0, 64 },
-		{ 65, 127 },
-		{ 128, 255 },
-		{ 256, 511 },
-		{ 512, 1023 },
-		{ 1024, 1518 },
-		{ 1519, 12288 }
-	},
+#define RTL839X_PORT_ISO_CTRL(port)		(0x1400 + ((port) << 3))
 
-	.drop_events = MIB_ITEM(MIB_REG_STD, 0xa8, 1),
-	.collisions = MIB_ITEM(MIB_REG_STD, 0x7c, 1),
+#define RTL839X_TBL_ACCESS_CTRL_2		(0x611C)
 
-	.rx_pause_frames = MIB_ITEM(MIB_REG_STD, 0xb0, 1),
-	.tx_pause_frames = MIB_ITEM(MIB_REG_STD, 0xac, 1),
+#define RTL839X_MAC_LINK_STS			(0x0390)
 
-	.list_count = ARRAY_SIZE(rtldsa_839x_mib_list),
-	.list = rtldsa_839x_mib_list
-};
+#define RTL839X_EEE_TX_TIMER_GELITE_CTRL	(0x042C)
+#define RTL839X_EEE_TX_TIMER_GIGA_CTRL		(0x0430)
+#define RTL839X_EEE_TX_TIMER_10G_CTRL		(0x0434)
+#define RTL839X_EEE_CTRL(p)			(0x8008 + ((p) << 7))
+
+#define RTL839X_L2_CTRL_0			(0x3800)
+
+#define RTL839X_L2_TBL_FLUSH_CTRL		(0x3ba0)
+
+#define RTL839X_RMA_BPDU_FLD_PMSK		(0x125C)
+
+#define RTL839X_SPCL_TRAP_EAPOL_CTRL		(0x105C)
+#define RTL839X_SPCL_TRAP_SWITCH_MAC_CTRL	(0x1068)
+
+#define RTL839X_IMR_GLB				(0x0064)
+#define RTL839X_IMR_PORT_LINK_STS_CHG		(0x0068)
+#define RTL839X_ISR_GLB_SRC			(0x009c)
+#define RTL839X_ISR_PORT_LINK_STS_CHG		(0x00a0)
+
+#define RTL839X_RMA_BPDU_CTRL			(0x122C)
+
+#define RTL839X_RMA_PTP_CTRL			(0x123C)
+
+#define RTL839X_RMA_LLDP_CTRL			(0x124C)
 
 void rtldsa_839x_print_matrix(void)
 {
@@ -127,28 +95,14 @@ static inline int rtl839x_mac_port_ctrl(int p)
 	return RTL839X_MAC_PORT_CTRL(p);
 }
 
-static int rtldsa_839x_get_mirror_config(struct rtldsa_mirror_config *config,
-					 int group, int port)
-{
-	config->ctrl = RTL839X_MIR_CTRL + group * 4;
-	config->spm = RTL839X_MIR_SPM_CTRL + group * 8;
-	config->dpm = RTL839X_MIR_DPM_CTRL + group * 8;
-
-	/* Enable mirroring to destination port */
-	config->val = BIT(0);
-	config->val |= port << 4;
-
-	return 0;
-}
-
-static inline int rtl839x_trk_mbr_ctr(int group)
-{
-	return RTL839X_TRK_MBR_CTR + (group << 3);
-}
-
 static void rtl839x_traffic_set(int source, u64 dest_matrix)
 {
-	rtl839x_set_port_reg_be(dest_matrix, rtl839x_port_iso_ctrl(source));
+	/* The isolation mask also applies to frames routed in hardware, which
+	 * may have to leave through the port they came in on. The SDK keeps a
+	 * port in its own mask; a bridged frame is still not sent back out of
+	 * its ingress port.
+	 */
+	rtl839x_set_port_reg_be(dest_matrix | BIT_ULL(source), rtl839x_port_iso_ctrl(source));
 }
 
 static void rtl839x_traffic_enable(int source, int dest)
@@ -159,34 +113,6 @@ static void rtl839x_traffic_enable(int source, int dest)
 static void rtl839x_traffic_disable(int source, int dest)
 {
 	rtl839x_mask_port_reg_be(BIT_ULL(dest), 0, rtl839x_port_iso_ctrl(source));
-}
-
-static int rtldsa_839x_stp_get(struct rtl838x_switch_priv *priv, u16 msti, int port)
-{
-	int idx = 3 - ((port + 12) / 16);
-	int bit = 2 * ((port + 12) % 16);
-	/* port < priv->r->cpu_port (RTL839X_CPU_PORT == 52), so idx is 0..3 */
-	u32 buf[4];
-	int state;
-
-	otto_table_read(RTL8390_TBL_MSTI, msti, &buf);
-	state = (buf[idx] >> bit) & 0x3;
-
-	return state;
-}
-
-static void rtl839x_stp_set(struct rtl838x_switch_priv *priv, u16 msti, int port, int state)
-{
-	int tbl = otto_table_acquire(RTL8390_TBL_MSTI);
-	int idx = 3 - ((port + 12) / 16);
-	int bit = 2 * ((port + 12) % 16);
-	/* port < priv->r->cpu_port (RTL839X_CPU_PORT == 52), so idx is 0..3 */
-	u32 buf[4];
-
-	__otto_table_read(tbl, msti, &buf);
-	buf[idx] = (buf[idx] & ~(0x3 << bit)) | (state << bit);
-	__otto_table_write(tbl, msti, &buf);
-	otto_table_release(tbl);
 }
 
 /* Enables or disables the EEE/EEEP capability of a port */
@@ -282,16 +208,6 @@ static void rtl839x_set_egr_filter(int port,  enum egr_filter state)
 		    RTL839X_VLAN_PORT_EGR_FLTR + (((port >> 5) << 2)));
 }
 
-static int rtldsa_839x_set_distribution_algorithm(struct rtl838x_switch_priv *priv,
-						  int group, int algoidx, u32 algomsk)
-{
-	sw_w32_mask(3 << ((group & 0xf) << 1), algoidx << ((group & 0xf) << 1),
-		    RTL839X_TRK_HASH_IDX_CTRL + ((group >> 4) << 2));
-	sw_w32(algomsk, RTL839X_TRK_HASH_CTRL + (algoidx << 2));
-
-	return 0;
-}
-
 static void rtl839x_set_receive_management_action(int port, rma_ctrl_t type, action_type_t action)
 {
 	switch (type) {
@@ -312,29 +228,17 @@ static void rtl839x_set_receive_management_action(int port, rma_ctrl_t type, act
 	}
 }
 
-static int rtldsa_839x_lag_set_port_members(struct rtl838x_switch_priv *priv, int group,
-					    u64 members, struct netdev_lag_upper_info *info)
-{
-	priv->lags_port_members[group] = members;
-
-	priv->r->set_port_reg_be(priv->lags_port_members[group],
-				 priv->r->trk_mbr_ctr(group));
-
-	return 0;
-}
-
-int rtldsa_83xx_lag_setup_algomask(struct rtl838x_switch_priv *priv, int group,
-				   struct netdev_lag_upper_info *info);
-
 const struct rtldsa_config rtldsa_839x_cfg = {
 	.switch_ops = &rtldsa_83xx_switch_ops,
 	.phylink_mac_ops = &rtldsa_83xx_phylink_mac_ops,
-	.spanning_tree_ctrl = RTL839X_ST_CTRL,
+	.stp_init = rtldsa_839x_stp_init,
 	.l2_bucket_size = 4,
 	.n_mst = 256,
 	.num_lag_ids = 16,
 	.cpu_port = RTL839X_CPU_PORT,
 	.fib_entries = 16384,
+	.l2_uc_tbl = RTL8390_TBL_L2_UC,
+	.l2_cam_tbl = RTL8390_TBL_L2_CAM_UC,
 	.mask_port_reg_be = rtl839x_mask_port_reg_be,
 	.set_port_reg_be = rtl839x_set_port_reg_be,
 	.get_port_reg_be = rtl839x_get_port_reg_be,
@@ -357,7 +261,7 @@ const struct rtldsa_config rtldsa_839x_cfg = {
 	.l2_ctrl_1 = RTL839X_L2_CTRL_1,
 	.self_mac_trap_ctrl = RTL839X_SPCL_TRAP_SWITCH_MAC_CTRL,
 	.l2_port_aging_out = RTL839X_L2_PORT_AGING_OUT,
-	.set_ageing_time = rtl839x_set_ageing_time,
+	.set_ageing_time = otto_l2_839x_set_ageing_time,
 	.l2_tbl_flush_ctrl = RTL839X_L2_TBL_FLUSH_CTRL,
 	.isr_glb_src = RTL839X_ISR_GLB_SRC,
 	.isr_port_link_sts_chg = RTL839X_ISR_PORT_LINK_STS_CHG,
@@ -366,23 +270,23 @@ const struct rtldsa_config rtldsa_839x_cfg = {
 	.n_counters = 1024,
 	.n_pie_blocks = 18,
 	.port_ignore = 0x3f,
-	.vlan_tables_read = rtl839x_vlan_tables_read,
-	.vlan_set_tagged = rtl839x_vlan_set_tagged,
-	.vlan_set_untagged = rtl839x_vlan_set_untagged,
-	.vlan_profile_get = rtldsa_839x_vlan_profile_get,
-	.vlan_profile_dump = rtldsa_839x_vlan_profile_dump,
-	.vlan_profile_setup = rtl839x_vlan_profile_setup,
-	.vlan_fwd_on_inner = rtl839x_vlan_fwd_on_inner,
-	.vlan_port_keep_tag_set = rtl839x_vlan_port_keep_tag_set,
-	.vlan_port_pvidmode_set = rtl839x_vlan_port_pvidmode_set,
-	.vlan_port_pvid_set = rtl839x_vlan_port_pvid_set,
+	.vlan_tables_read = otto_vlan_839x_tables_read,
+	.vlan_set_tagged = otto_vlan_839x_set_tagged,
+	.vlan_set_untagged = otto_vlan_839x_set_untagged,
+	.vlan_profile_get = otto_vlan_839x_profile_get,
+	.vlan_profile_dump = otto_vlan_839x_profile_dump,
+	.vlan_profile_setup = otto_vlan_839x_profile_setup,
+	.vlan_fwd_on_inner = otto_vlan_839x_port_forward_on_inner,
+	.vlan_port_keep_tag_set = otto_vlan_839x_port_keep_tag_set,
+	.vlan_port_pvidmode_set = otto_vlan_839x_port_pvid_mode_set,
+	.vlan_port_pvid_set = otto_vlan_839x_port_pvid_set,
 	.set_vlan_igr_filter = rtl839x_set_igr_filter,
 	.set_vlan_egr_filter = rtl839x_set_egr_filter,
-	.enable_learning = rtl839x_enable_learning,
-	.enable_flood = rtl839x_enable_flood,
-	.enable_mcast_flood = rtl839x_enable_mcast_flood,
-	.enable_bcast_flood = rtl839x_enable_bcast_flood,
-	.set_static_move_action = rtl839x_set_static_move_action,
+	.enable_learning = otto_l2_839x_enable_learning,
+	.enable_flood = otto_l2_839x_enable_flood,
+	.enable_mcast_flood = otto_l2_839x_enable_mcast_flood,
+	.enable_bcast_flood = otto_l2_839x_enable_bcast_flood,
+	.set_static_move_action = otto_l2_839x_set_static_move_action,
 	.stp_get = rtldsa_839x_stp_get,
 	.stp_set = rtl839x_stp_set,
 	.mac_force_mode_mask = RTL83XX_FORCE_EN | RTL83XX_FORCE_LINK_EN,
@@ -392,37 +296,37 @@ const struct rtldsa_config rtldsa_839x_cfg = {
 	.mac_capabilities = MAC_ASYM_PAUSE | MAC_SYM_PAUSE | MAC_10 | MAC_100 | MAC_1000FD,
 	.mac_max_len_ctrl = RTL839X_MAC_MAX_LEN_CTRL,
 	.max_frame = RTL839X_MAX_FRAME,
-	.l2_port_new_salrn = rtl839x_l2_port_new_salrn,
-	.l2_port_new_sa_fwd = rtl839x_l2_port_new_sa_fwd,
+	.l2_port_new_salrn = otto_l2_839x_port_new_salrn,
+	.l2_port_new_sa_fwd = otto_l2_839x_port_new_sa_fwd,
 	.get_mirror_config = rtldsa_839x_get_mirror_config,
 	.print_matrix = rtldsa_839x_print_matrix,
-	.read_l2_entry_using_hash = rtl839x_read_l2_entry_using_hash,
-	.write_l2_entry_using_hash = rtl839x_write_l2_entry_using_hash,
-	.read_cam = rtl839x_read_cam,
-	.write_cam = rtl839x_write_cam,
-	.fast_age = rtldsa_839x_fast_age,
-	.trk_mbr_ctr = rtl839x_trk_mbr_ctr,
+	.read_l2_entry_using_hash = otto_l2_839x_read_entry_using_hash,
+	.write_l2_entry_using_hash = otto_l2_839x_write_entry_using_hash,
+	.read_cam = otto_l2_839x_read_cam,
+	.write_cam = otto_l2_839x_write_cam,
+	.fast_age = otto_l2_839x_fast_age,
+	.trk_mbr_ctr = otto_lag_839x_trk_mbr_ctr,
 	.rma_bpdu_fld_pmask = RTL839X_RMA_BPDU_FLD_PMSK,
 	.spcl_trap_eapol_ctrl = RTL839X_SPCL_TRAP_EAPOL_CTRL,
 	.init_eee = rtl839x_init_eee,
 	.set_mac_eee = rtldsa_839x_set_mac_eee,
-	.l2_hash_seed = rtl839x_l2_hash_seed,
-	.l2_hash_key = rtl839x_l2_hash_key,
-	.read_mcast_pmask = rtl839x_read_mcast_pmask,
-	.write_mcast_pmask = rtl839x_write_mcast_pmask,
+	.l2_hash_seed = otto_l2_839x_hash_seed,
+	.l2_hash_key = otto_l2_839x_hash_key,
+	.read_mcast_pmask = otto_l2_839x_read_mcast_pmask,
+	.write_mcast_pmask = otto_l2_839x_write_mcast_pmask,
 	.pie_init = rtl839x_pie_init,
 	.pie_rule_read = rtl839x_pie_rule_read,
 	.pie_rule_write = rtl839x_pie_rule_write,
 	.pie_rule_add = rtl839x_pie_rule_add,
 	.pie_rule_rm = rtl839x_pie_rule_rm,
-	.l2_learning_setup = rtl839x_l2_learning_setup,
+	.l2_learning_setup = otto_l2_839x_learning_setup,
 	.packet_cntr_read = rtl839x_packet_cntr_read,
 	.packet_cntr_clear = rtl839x_packet_cntr_clear,
 	.set_receive_management_action = rtl839x_set_receive_management_action,
 	.get_egress_rate = rtldsa_839x_get_egress_rate,
 	.set_egress_rate = rtldsa_839x_set_egress_rate,
 	.qos_init = rtldsa_839x_qos_init,
-	.lag_set_distribution_algorithm = rtldsa_839x_set_distribution_algorithm,
-	.lag_set_port_members = rtldsa_839x_lag_set_port_members,
-	.lag_setup_algomask = rtldsa_83xx_lag_setup_algomask,
+	.lag_set_distribution_algorithm = otto_lag_839x_set_distribution_algorithm,
+	.lag_set_port_members = otto_lag_839x_set_port_members,
+	.lag_setup_algomask = otto_lag_83xx_setup_algomask,
 };
