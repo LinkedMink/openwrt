@@ -772,11 +772,11 @@ define Device/bananapi_bpi-r3-kmod
 				$(if $(CONFIG_TARGET_ROOTFS_SQUASHFS),\
 				   pad-to 72M | append-image squashfs-sysupgrade.itb | check-size |\
 				) \
-				  gzip
+				  libdeflate-gzip
 ifeq ($(DUMP),)
   IMAGE_SIZE := $$(shell expr 64 + $$(CONFIG_TARGET_ROOTFS_PARTSIZE))m
 endif
-  KERNEL			:= kernel-bin | gzip
+  KERNEL			:= kernel-bin | libdeflate-gzip
   KERNEL_INITRAMFS := kernel-bin | lzma | \
 	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | pad-to 64k
   IMAGE/sysupgrade.itb := append-kernel | fit gzip $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb external-static-with-rootfs | pad-rootfs | append-metadata

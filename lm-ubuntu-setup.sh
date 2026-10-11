@@ -3,7 +3,7 @@
 
 source lm-utility.sh
 
-OPENWRT_GIT_REPO_URL="git://git.openwrt.org/openwrt/openwrt.git"
+OPENWRT_GIT_REPO_URL="https://git.openwrt.org/openwrt/openwrt.git"
 
 #endregion
 #region Main
