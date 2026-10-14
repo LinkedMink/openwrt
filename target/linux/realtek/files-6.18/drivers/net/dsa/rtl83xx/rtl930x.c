@@ -3,6 +3,7 @@
 #include <asm/mach-rtl-otto/mach-rtl-otto.h>
 #include <linux/etherdevice.h>
 #include <linux/inetdevice.h>
+#include <linux/regmap.h>
 
 #include "lag.h"
 #include "l2.h"
@@ -89,6 +90,13 @@
 
 /* get shift for given led in any set */
 #define RTL930X_LED_SET_LEDX_SHIFT(x) (16 * (x % 2))
+
+#define RTL930X_SMI_MAC_TYPE_CTRL		0xca04
+#define RTL930X_SMI_MAC_TYPE_P0_23(pn)		(GENMASK(1, 0) << (((pn) / 4) * 2))
+#define RTL930X_SMI_MAC_TYPE_P24_27(pn)		(GENMASK(2, 0) << (((pn) - 24) * 3 + 12))
+#define RTL930X_SMI_MAC_TYPE_PCS		0x0
+#define RTL930X_SMI_MAC_TYPE_MULTIGIG_PHY	0x1
+#define RTL930X_SMI_MAC_TYPE_1G_PHY		0x3
 
 void rtldsa_930x_print_matrix(void)
 {
@@ -543,6 +551,35 @@ static void rtl930x_led_init(struct rtl838x_switch_priv *priv)
 		dev_dbg(dev, "%08x: %08x\n", 0xbb00cc00 + i * 4, sw_r32(0xcc00 + i * 4));
 }
 
+static int
+rtldsa_930x_mac_link_state_source_set(struct rtl838x_switch_priv *priv,
+				      int port,
+				      enum rtldsa_mac_link_state_source source,
+				      phy_interface_t interface)
+{
+	u32 mask, src_val;
+
+	if (port < 24)
+		mask = RTL930X_SMI_MAC_TYPE_P0_23(port);
+	else if (port < 28)
+		mask = RTL930X_SMI_MAC_TYPE_P24_27(port);
+	else
+		return 0;
+
+	if (source == RTLDSA_MAC_LINK_STATE_SOURCE_PCS)
+		src_val = RTL930X_SMI_MAC_TYPE_PCS;
+	else if (interface == PHY_INTERFACE_MODE_2500BASEX ||
+		 interface == PHY_INTERFACE_MODE_10GBASER ||
+		 interface == PHY_INTERFACE_MODE_USXGMII ||
+		 interface == PHY_INTERFACE_MODE_10G_QXGMII)
+		src_val = RTL930X_SMI_MAC_TYPE_MULTIGIG_PHY;
+	else
+		src_val = RTL930X_SMI_MAC_TYPE_1G_PHY;
+
+	return regmap_update_bits(priv->map, RTL930X_SMI_MAC_TYPE_CTRL,
+				  mask, field_prep(mask, src_val));
+}
+
 const struct rtldsa_config rtldsa_930x_cfg = {
 	.switch_ops = &rtldsa_93xx_switch_ops,
 	.phylink_mac_ops = &rtldsa_93xx_phylink_mac_ops,
@@ -564,11 +601,11 @@ const struct rtldsa_config rtldsa_930x_cfg = {
 	.stat_rst = RTL930X_STAT_RST,
 	.stat_port_std_mib = RTL930X_STAT_PORT_MIB_CNTR,
 	.stat_port_prv_mib = RTL930X_STAT_PORT_PRVTE_CNTR,
-	.mib_desc = &rtldsa_930x_mib_desc,
+	.mib_desc = &otto_stats_930x_mib_desc,
 	.stat_counters_lock = otto_stats_counters_lock_register,
 	.stat_counters_unlock = otto_stats_counters_unlock_register,
 	.stat_update_counters_atomically = otto_stats_update_counters_atomically,
-	.stat_counter_poll_interval = RTLDSA_COUNTERS_POLL_INTERVAL,
+	.stat_counter_poll_interval = OTTO_STATS_COUNTERS_POLL_INTERVAL,
 	.traffic_enable = rtl930x_traffic_enable,
 	.traffic_disable = rtl930x_traffic_disable,
 	.traffic_set = rtl930x_traffic_set,
@@ -584,6 +621,7 @@ const struct rtldsa_config rtldsa_930x_cfg = {
 	.n_counters = 2048,
 	.n_pie_blocks = 16,
 	.pie_rule_id_is_log_counter = true,
+	.pie_cls_flower = true,
 	.port_ignore = 0x3f,
 	.vlan_tables_read = otto_vlan_930x_tables_read,
 	.vlan_set_tagged = otto_vlan_930x_set_tagged,
@@ -597,8 +635,18 @@ const struct rtldsa_config rtldsa_930x_cfg = {
 	.stp_get = rtldsa_930x_stp_get,
 	.stp_set = rtl930x_stp_set,
 	.mac_link_sts = RTL930X_MAC_LINK_STS,
-	.mac_force_mode_mask = RTL930X_FORCE_EN | RTL930X_FORCE_LINK_EN,
+	.mac_force_mode = {
+		.force_en_mask = RTL930X_FORCE_EN,
+		.fc_force_en_mask = RTL930X_MAC_FORCE_FC_EN,
+		.link_up_mask = RTL930X_FORCE_LINK_EN,
+		.duplex_mask = RTL930X_DUPLEX_MODE,
+		.speed_mask = RTL930X_SPEED_MASK,
+		.tx_pause_mask = RTL930X_TX_PAUSE_EN,
+		.rx_pause_mask = RTL930X_RX_PAUSE_EN,
+		.media_mask = RTL930X_MEDIA_SEL,
+	},
 	.mac_force_mode_ctrl = rtl930x_mac_force_mode_ctrl,
+	.mac_link_state_source_set = rtldsa_930x_mac_link_state_source_set,
 	.mac_port_ctrl = rtl930x_mac_port_ctrl,
 	.mac_capabilities = MAC_ASYM_PAUSE | MAC_SYM_PAUSE | MAC_10 | MAC_100 |
 			    MAC_1000FD | MAC_2500FD | MAC_5000FD | MAC_10000FD,
