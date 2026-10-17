@@ -2551,48 +2551,7 @@ TARGET_DEVICES += keenetic_kap-630
 kn1012_uboot_pad := 1024k
 
 define Build/kn1012-prepend-uboot
-	$(STAGING_DIR_HOST)/bin/lzma e \
-		$(STAGING_DIR_IMAGE)/mt7981_keenetic_kn-1012-u-boot.bin $@.uboot.lzma
-	( \
-		printf '/dts-v1/;\n\n/ {\n'; \
-		printf '\tdescription = "FIT";\n'; \
-		printf '\t#address-cells = <1>;\n\n\timages {\n'; \
-		printf '\t\tkernel@1 {\n'; \
-		printf '\t\t\tdescription = "Linux 4.9";\n'; \
-		printf '\t\t\tdata = /incbin/("$@.uboot.lzma");\n'; \
-		printf '\t\t\ttype = "kernel";\n\t\t\tarch = "arm64";\n'; \
-		printf '\t\t\tos = "linux";\n\t\t\tcompression = "lzma";\n'; \
-		printf '\t\t\tload = <0x48080000>;\n'; \
-		printf '\t\t\tentry = <0x48080000>;\n'; \
-		printf '\t\t\thash@1 { algo = "crc32"; };\n'; \
-		printf '\t\t\thash@2 { algo = "sha1"; };\n\t\t};\n'; \
-		printf '\t\tfdt@1 {\n'; \
-		printf '\t\t\tdescription = "$(DEVICE_MODEL) DTB";\n'; \
-		printf '\t\t\tdata = /incbin/("$(KDIR)/image-$(word 1,$(DEVICE_DTS)).dtb");\n'; \
-		printf '\t\t\ttype = "flat_dt";\n\t\t\tarch = "arm64";\n'; \
-		printf '\t\t\tcompression = "none";\n'; \
-		printf '\t\t\thash@1 { algo = "crc32"; };\n'; \
-		printf '\t\t\thash@2 { algo = "sha1"; };\n\t\t};\n'; \
-		printf '\t};\n\n\tconfigurations {\n'; \
-		printf '\t\tdefault = "config@1";\n'; \
-		printf '\t\tconfig@1 {\n'; \
-		printf '\t\t\tdescription = "NDMS";\n'; \
-		printf '\t\t\tkernel = "kernel@1";\n'; \
-		printf '\t\t\tfdt = "fdt@1";\n\t\t};\n'; \
-		printf '\t};\n};\n'; \
-	) > $@.uboot.its
-	PATH=$(LINUX_DIR)/scripts/dtc:$(PATH) mkimage -f $@.uboot.its $@.uboot.itb
-	mv $@ $@.payload
-	mv $@.uboot.itb $@
-	$(call Build/append-squashfs4-fakeroot)
-	test $$(wc -c < $@) -le $$(( $(call exp_units,$(kn1012_uboot_pad)) )) || { \
-		echo "chainloader does not fit in the $(kn1012_uboot_pad) it is padded to" >&2; \
-		false; \
-	}
-	$(call Build/pad-to,$(kn1012_uboot_pad))
-	cat $@ $@.payload > $@.new
-	@mv $@.new $@
-	@rm -rf $@.payload $@.uboot.lzma $@.uboot.its $@.fakefs $@.fakesquashfs
+  echo "Debug - DISABLED kn1012-prepend-uboot"
 endef
 
 define Device/keenetic_kn-1012-common

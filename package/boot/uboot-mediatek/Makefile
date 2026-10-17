@@ -1686,13 +1686,6 @@ define Build/fip-image
 		$(PKG_BUILD_DIR)/u-boot.fip
 endef
 
-define Build/append-bpi-r3-kmod-env
-	ls -la $(PKG_BUILD_DIR)
-	cat files/uEnv-bpi-r3-kmod_$(BPI_R3_KMOD_MEMORY_TYPE).txt >> \
-		$(PKG_BUILD_DIR)/bananapi_bpi-r3_$(BPI_R3_KMOD_MEMORY_TYPE)_env
-	cat $(PKG_BUILD_DIR)/bananapi_bpi-r3_$(BPI_R3_KMOD_MEMORY_TYPE)_env
-endef
-
 ifdef CONFIG_TARGET_ramips_mt7621
 define Build/Prepare
 	$(call Build/Prepare/Default)
@@ -1704,9 +1697,15 @@ endif
 endef
 endif
 
+define Build/append-bpi-r3-kmod-env
+	ls -la $(PKG_BUILD_DIR)
+	cat files/uEnv-bpi-r3-kmod_$(BPI_R3_KMOD_MEMORY_TYPE).txt >> \
+		$(PKG_BUILD_DIR)/bananapi_bpi-r3_$(BPI_R3_KMOD_MEMORY_TYPE)_env
+	cat $(PKG_BUILD_DIR)/bananapi_bpi-r3_$(BPI_R3_KMOD_MEMORY_TYPE)_env
+endef
+
 define Build/Configure
 	$(call Build/Configure/U-Boot)
-	sed -i 's/CONFIG_TOOLS_LIBCRYPTO=y/# CONFIG_TOOLS_LIBCRYPTO is not set/' $(PKG_BUILD_DIR)/.config
 ifneq ($(BPI_R3_KMOD_MEMORY_TYPE),)
 	$(call Build/append-bpi-r3-kmod-env)
 endif
